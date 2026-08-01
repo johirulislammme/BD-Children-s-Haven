@@ -1,0 +1,18 @@
+{
+  "name": "bd-childrens-haven",
+  "version": "1.0.0",
+  "description": "BD Children's Haven - custom storefront with admin panel and SSLCommerz payments",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.3.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "sslcommerz-lts": "^1.1.0",
+    "uuid": "^9.0.1"
+  }
+}
