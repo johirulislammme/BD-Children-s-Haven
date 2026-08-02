@@ -100,8 +100,8 @@
   .btn-primary{background:var(--coral);color:#fff;}
   .form-field{margin-bottom:12px;}
   .form-field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:4px;}
-  .form-field input,.form-field textarea{width:100%;padding:10px 12px;border-radius:10px;border:2px solid #eee0c4;font-family:'Nunito';font-size:14px;}
-  #checkoutForm{display:none;padding:0 20px 20px;}
+  .form-field input,.form-field textarea,.form-field select{width:100%;padding:10px 12px;border-radius:10px;border:2px solid #eee0c4;font-family:'Nunito';font-size:14px;}
+  #checkoutForm{display:none;padding:0 20px 20px;overflow-y:auto;}
   #checkoutForm.open{display:block;}
 
   @media (max-width:960px){ .product-row{grid-template-columns:repeat(2,1fr);} .trust-grid{grid-template-columns:repeat(2,1fr);} }
@@ -191,11 +191,35 @@
     <div class="total-row"><span>Total</span><span id="cartTotal">৳ 0</span></div>
     <button class="btn btn-primary" id="checkoutBtn">Checkout</button>
   </div>
+  
+  <!-- Updated Manual Payment Form -->
   <form id="checkoutForm">
-    <div class="form-field"><label>Full name</label><input type="text" id="cf-name" required></div>
-    <div class="form-field"><label>Phone number</label><input type="tel" id="cf-phone" required></div>
-    <div class="form-field"><label>Delivery address</label><textarea id="cf-address" rows="2" required></textarea></div>
-    <button class="btn btn-primary" type="submit">Place Order & Pay</button>
+    <hr style="border:none; border-top: 1px dashed #eee0c4; margin: 15px 0;">
+    <div class="form-field"><label>Full Name (আপনার নাম)</label><input type="text" id="cf-name" required placeholder="e.g. Rahat Islam"></div>
+    <div class="form-field"><label>Phone Number (মোবাইল নম্বর)</label><input type="tel" id="cf-phone" required placeholder="017XXXXXXXX"></div>
+    <div class="form-field"><label>Delivery Address (পূর্ণাঙ্গ ঠিকানা)</label><textarea id="cf-address" rows="2" required placeholder="জেলা, থানা ও রাস্তার ঠিকানা"></textarea></div>
+    
+    <div class="form-field">
+      <label>Payment Method (পেমেন্ট পদ্ধতি)</label>
+      <select id="cf-method" onchange="toggleMethodDetails()">
+        <option value="bkash">bKash Personal (সেন্ড মানি)</option>
+        <option value="nagad">Nagad Personal (সেন্ড মানি)</option>
+        <option value="cod">Cash on Delivery (ক্যাশ অন ডেলিভারি)</option>
+      </select>
+    </div>
+
+    <!-- Instruction Box -->
+    <div id="payment-notice" style="background:#fdf3e7; padding:10px; border-left:4px solid #f5c518; font-size:12px; margin-bottom:12px; border-radius:4px;">
+      আমাদের <strong>bKash Personal</strong> নম্বর: <strong>017XXXXXXXX</strong>-এ পেমেন্ট বা ডেলিভারি চার্জ Send Money করুন।
+    </div>
+
+    <!-- Trx Fields -->
+    <div id="trx-fields">
+      <div class="form-field"><label>Sender Number (যে নম্বর থেকে টাকা পাঠিয়েছেন)</label><input type="text" id="cf-sender" placeholder="017XXXXXXXX"></div>
+      <div class="form-field"><label>Transaction ID (TrxID)</label><input type="text" id="cf-trxid" placeholder="e.g. 9H87G6F5"></div>
+    </div>
+
+    <button class="btn btn-primary" type="submit">Place Order Now</button>
   </form>
 </div>
 
@@ -265,6 +289,23 @@ function renderCart(){
 function openDrawer(){ document.getElementById('drawer').classList.add('open'); document.getElementById('overlay').classList.add('open'); }
 function closeDrawer(){ document.getElementById('drawer').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); document.getElementById('checkoutForm').classList.remove('open'); }
 
+function toggleMethodDetails(){
+  const method = document.getElementById('cf-method').value;
+  const notice = document.getElementById('payment-notice');
+  const trxFields = document.getElementById('trx-fields');
+
+  if(method === 'bkash') {
+    trxFields.style.display = 'block';
+    notice.innerHTML = 'আমাদের <strong>bKash Personal</strong> নম্বর: <strong>01976078375</strong>-এ টাকা Send Money করুন।';
+  } else if(method === 'nagad') {
+    trxFields.style.display = 'block';
+    notice.innerHTML = 'আমাদের <strong>Nagad Personal</strong> নম্বর: <strong>01976078375</strong>-এ টাকা Send Money করুন।';
+  } else {
+    trxFields.style.display = 'none';
+    notice.innerHTML = 'পণ্য হাতে পেয়ে টাকা পরিশোধ করুন। (ঢাকার বাইরে কুরিয়ার চার্জ অগ্রিম প্রযোজ্য হতে পারে)।';
+  }
+}
+
 document.getElementById('cartBtn').addEventListener('click', openDrawer);
 document.getElementById('drawerClose').addEventListener('click', closeDrawer);
 document.getElementById('overlay').addEventListener('click', closeDrawer);
@@ -275,22 +316,31 @@ document.getElementById('checkoutBtn').addEventListener('click', () => {
 
 document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const customer = {
-    name: document.getElementById('cf-name').value,
-    phone: document.getElementById('cf-phone').value,
-    address: document.getElementById('cf-address').value,
-  };
+  const customerName = document.getElementById('cf-name').value;
+  const phone = document.getElementById('cf-phone').value;
+  const address = document.getElementById('cf-address').value;
+  const paymentMethod = document.getElementById('cf-method').value;
+  const senderNumber = document.getElementById('cf-sender').value;
+  const trxId = document.getElementById('cf-trxid').value;
+  
   const items = cart.map(l => ({ id: l.id, qty: l.qty }));
+  const totalAmount = cart.reduce((s,l)=> s + (allProducts[l.id] ? allProducts[l.id].price * l.qty : 0), 0);
+
   const res = await fetch('/api/checkout', {
-    method: 'POST', headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ customer, items })
+    method: 'POST', 
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ 
+      customerName, phone, address, paymentMethod, senderNumber, trxId, items, totalAmount 
+    })
   });
+
   const data = await res.json();
-  if (data.ok){
+  if (data.success){
     localStorage.removeItem('bch_cart');
-    window.location.href = data.redirect;
+    alert('ধন্যবাদ! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে। অর্ডার আইডি: ' + data.orderId);
+    location.reload();
   } else {
-    alert(data.error || 'Something went wrong. Please try again.');
+    alert(data.error || 'অর্ডার করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
   }
 });
 
