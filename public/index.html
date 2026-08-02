@@ -31,7 +31,7 @@
     .brandmark-text span{color:var(--coral);}
     .nav-links{display:flex;gap:20px;margin-left:auto;font-weight:700;font-size:14px;color:var(--denim);}
     .nav-links a:hover{color:var(--coral);}
-    .cart-btn{position:relative;background:#fff;border:2px solid #eee0c4;padding:8px 14px;border-radius:99px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 2px 0 #eee0c4;}
+    .cart-btn{position:relative;background:#fff;border:2px solid #eee0c4;padding:8px 14px;border-radius:99px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 2px 0 #eee0c4;cursor:pointer;}
     .cart-count{background:var(--coral);color:#fff;font-size:11px;padding:2px 7px;border-radius:99px;position:absolute;top:-6px;right:-6px;border:2px solid #fff;}
 
     .hero{padding:48px 0 24px;text-align:center;}
@@ -63,6 +63,16 @@
     .add-btn{background:var(--coral);color:#fff;border:none;width:32px;height:32px;border-radius:50%;font-size:18px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 0 var(--coral-dark);}
     .add-btn:hover{background:var(--coral-dark);}
 
+    /* Modal / Drawer styles */
+    .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(36,56,88,0.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;}
+    .modal{background:#fff;width:100%;max-width:480px;border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,0.15);position:relative;}
+    .modal h2{margin-top:0;color:var(--denim-dark);}
+    .cart-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee0c4;}
+    .close-btn{background:none;border:none;font-size:20px;cursor:pointer;position:absolute;top:16px;right:16px;}
+    .checkout-form input{width:100%;padding:10px;margin:8px 0;border:2px solid #eee0c4;border-radius:8px;font-family:inherit;}
+    .checkout-btn{width:100%;background:var(--leaf);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:800;font-size:16px;cursor:pointer;margin-top:12px;}
+    .checkout-btn:hover{background:var(--leaf-dark);}
+
     footer{margin-top:60px;background:var(--denim-dark);color:#a0aec0;padding:40px 0 20px;font-size:14px;text-align:center;}
   </style>
 </head>
@@ -81,7 +91,7 @@
         <a href="#food">Food</a>
         <a href="#cosmetics">Cosmetics</a>
       </div>
-      <button class="cart-btn">
+      <button class="cart-btn" onclick="openCart()">
         🛒 <span class="cart-count">0</span>
       </button>
     </div>
@@ -112,66 +122,50 @@
   </section>
 
   <main class="wrap">
-    <!-- Toys Section -->
     <section id="toys">
-      <div class="sec-head">
-        <div class="badge">🧸</div>
-        <div>
-          <h2>Toys & Games</h2>
-          <p>Building blocks, cars, puzzles & plushies.</p>
-        </div>
-      </div>
+      <div class="sec-head"><div class="badge">🧸</div><div><h2>Toys & Games</h2><p>Building blocks, cars, puzzles & plushies.</p></div></div>
       <div class="prod-grid" id="grid-toys"></div>
     </section>
 
-    <!-- Learning Section -->
     <section id="learning">
-      <div class="sec-head">
-        <div class="badge">🔬</div>
-        <div>
-          <h2>Learning Kits</h2>
-          <p>Educational tools, books & STEM toys.</p>
-        </div>
-      </div>
+      <div class="sec-head"><div class="badge">🔬</div><div><h2>Learning Kits</h2><p>Educational tools, books & STEM toys.</p></div></div>
       <div class="prod-grid" id="grid-learning"></div>
     </section>
 
-    <!-- Dress Section -->
     <section id="dress">
-      <div class="sec-head">
-        <div class="badge">👗</div>
-        <div>
-          <h2>Kids Dress</h2>
-          <p>Comfortable & stylish clothing for children.</p>
-        </div>
-      </div>
+      <div class="sec-head"><div class="badge">👗</div><div><h2>Kids Dress</h2><p>Comfortable & stylish clothing for children.</p></div></div>
       <div class="prod-grid" id="grid-dress"></div>
     </section>
 
-    <!-- Food Section -->
     <section id="food">
-      <div class="sec-head">
-        <div class="badge">🍪</div>
-        <div>
-          <h2>Healthy Foods</h2>
-          <p>Organic snacks, cereals & baby food.</p>
-        </div>
-      </div>
+      <div class="sec-head"><div class="badge">🍪</div><div><h2>Healthy Foods</h2><p>Organic snacks, cereals & baby food.</p></div></div>
       <div class="prod-grid" id="grid-food"></div>
     </section>
 
-    <!-- Cosmetics Section -->
     <section id="cosmetics">
-      <div class="sec-head">
-        <div class="badge">🧴</div>
-        <div>
-          <h2>Baby Cosmetics</h2>
-          <p>Gentle lotion, shampoo & skincare products.</p>
-        </div>
-      </div>
+      <div class="sec-head"><div class="badge">🧴</div><div><h2>Baby Cosmetics</h2><p>Gentle lotion, shampoo & skincare products.</p></div></div>
       <div class="prod-grid" id="grid-cosmetics"></div>
     </section>
   </main>
+
+  <!-- Cart Modal -->
+  <div class="modal-overlay" id="cartModal">
+    <div class="modal">
+      <button class="close-btn" onclick="closeCart()">×</button>
+      <h2>Your Shopping Cart</h2>
+      <div id="cartItemsList" style="max-height: 180px; overflow-y: auto; margin-bottom: 16px;"></div>
+      <div style="font-weight: 800; font-size: 18px; display: flex; justify-content: space-between; margin-bottom: 16px;">
+        <span>Total:</span>
+        <span id="cartTotalPrice">৳ 0</span>
+      </div>
+      <div class="checkout-form">
+        <input type="text" id="custName" placeholder="Full Name">
+        <input type="text" id="custPhone" placeholder="Phone Number">
+        <input type="text" id="custAddress" placeholder="Delivery Address">
+        <button class="checkout-btn" onclick="checkoutOrder()">Confirm Order</button>
+      </div>
+    </div>
+  </div>
 
   <footer>
     <div class="wrap">
@@ -180,13 +174,16 @@
   </footer>
 
   <script>
+    let cart = [];
+    let allProducts = [];
+
     async function loadProducts() {
       try {
         const response = await fetch('/api/products');
-        const products = await response.json();
+        allProducts = await response.json();
         
-        if (Array.isArray(products) && products.length > 0) {
-          products.forEach(p => {
+        if (Array.isArray(allProducts) && allProducts.length > 0) {
+          allProducts.forEach(p => {
             let catKey = p.category ? p.category.toLowerCase().trim() : '';
             if (catKey === 'foods') catKey = 'food';
             
@@ -204,7 +201,7 @@
                 </div>
                 <div class="card-footer">
                   <div class="price">৳ ${p.price}</div>
-                  <button class="add-btn" onclick="alert('পণ্যটি কার্ট করা হয়েছে!')">+</button>
+                  <button class="add-btn" onclick="addToCart(${p.id})">+</button>
                 </div>
               `;
               grid.appendChild(card);
@@ -214,6 +211,72 @@
       } catch (err) {
         console.error('Error fetching products:', err);
       }
+    }
+
+    function addToCart(id) {
+      const product = allProducts.find(p => p.id === id);
+      if (product) {
+        cart.push(product);
+        updateCartCount();
+        alert(product.name + ' কার্টে যোগ করা হয়েছে!');
+      }
+    }
+
+    function updateCartCount() {
+      document.querySelector('.cart-count').innerText = cart.length;
+    }
+
+    function openCart() {
+      const list = document.getElementById('cartItemsList');
+      list.innerHTML = '';
+      let total = 0;
+
+      if (cart.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color:#88itude;">কার্ট খালি আছে!</p>';
+      } else {
+        cart.forEach((item, index) => {
+          total += item.price;
+          list.innerHTML += `
+            <div class="cart-item">
+              <div><strong>${item.name}</strong><br><small>৳ ${item.price}</small></div>
+              <button onclick="removeFromCart(${index})" style="background:var(--coral); color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Remove</button>
+            </div>
+          `;
+        });
+      }
+      document.getElementById('cartTotalPrice').innerText = '৳ ' + total;
+      document.getElementById('cartModal').style.display = 'flex';
+    }
+
+    function closeCart() {
+      document.getElementById('cartModal').style.display = 'none';
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCartCount();
+      openCart();
+    }
+
+    function checkoutOrder() {
+      const name = document.getElementById('custName').value;
+      const phone = document.getElementById('custPhone').value;
+      const address = document.getElementById('custAddress').value;
+
+      if (!name || !phone || !address) {
+        alert('দয়া করে আপনার নাম, ফোন নম্বর এবং ঠিকানা দিন।');
+        return;
+      }
+
+      if (cart.length === 0) {
+        alert('আপনার কার্ট খালি!');
+        return;
+      }
+
+      alert('ধন্যবাদ ' + name + '! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। খুব শীঘ্রই আপনার সাথে যোগাযোগ করা হবে।');
+      cart = [];
+      updateCartCount();
+      closeCart();
     }
 
     document.addEventListener('DOMContentLoaded', loadProducts);
