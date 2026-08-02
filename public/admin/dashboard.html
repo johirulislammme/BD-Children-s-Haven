@@ -1,190 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — BD Children's Haven</title>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-<style>
-  :root{--ink:#243858;--sun:#f5c518;--coral:#ef6461;--sky:#3e7cb1;--cream:#fdf6ea;}
-  *{box-sizing:border-box;}
-  body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);}
-  header{background:#2f4258;color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;}
-  header h1{font-family:'Baloo 2';font-size:18px;margin:0;}
-  header button{background:none;border:1px solid #fff;color:#fff;border-radius:999px;padding:8px 16px;cursor:pointer;font-family:'Baloo 2';}
-  .wrap{max-width:1000px;margin:0 auto;padding:26px 20px 60px;}
-  .tabs{display:flex;gap:10px;margin-bottom:22px;}
-  .tab-btn{font-family:'Baloo 2';font-weight:700;padding:9px 18px;border-radius:999px;border:2px solid var(--ink);background:#fff;cursor:pointer;}
-  .tab-btn.active{background:var(--ink);color:#fff;}
-  .panel{display:none;} .panel.active{display:block;}
-  table{width:100%;border-collapse:collapse;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 6px 16px rgba(36,56,88,0.06);}
-  th,td{text-align:left;padding:11px 12px;font-size:13.5px;border-bottom:1px solid #f1ece0;}
-  th{background:#f5efe0;font-family:'Baloo 2';font-size:12.5px;}
-  input,select{padding:8px 10px;border-radius:8px;border:1px solid #ddd;font-family:'Nunito';font-size:13px;width:100%;}
-  .row-form{display:grid;grid-template-columns:1.4fr 1fr 0.7fr 0.6fr 0.6fr 0.8fr auto;gap:8px;align-items:center;margin-bottom:18px;background:#fff;padding:14px;border-radius:14px;box-shadow:0 6px 16px rgba(36,56,88,0.06);}
-  button.add-btn{background:var(--coral);color:#fff;border:none;border-radius:8px;padding:9px 14px;font-family:'Baloo 2';font-weight:700;cursor:pointer;}
-  button.mini{border:none;border-radius:6px;padding:5px 9px;font-size:12px;cursor:pointer;margin-right:4px;}
-  .edit-btn{background:var(--sky);color:#fff;} .del-btn{background:var(--coral);color:#fff;} .save-btn{background:#5fa557;color:#fff;}
-  .status-pill{font-family:'Baloo 2';font-size:11px;padding:3px 9px;border-radius:999px;color:#fff;}
-  .PENDING{background:#d9a90f;} .PAID{background:#5fa557;} .FAILED{background:#ef6461;} .CANCELLED{background:#888;}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BD Children's Haven — Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;font-family:'Nunito',sans-serif;background:#fdf6ea;color:#243858;}
+    header{background:#22303f;color:#fff;padding:16px 24px;font-weight:800;font-size:20px;}
+    .container{max-width:1100px;margin:30px auto;padding:0 20px;}
+    .tabs{display:flex;gap:12px;margin-bottom:24px;}
+    .tab-btn{background:#2f4258;color:#fff;border:none;padding:10px 20px;border-radius:99px;font-weight:700;cursor:pointer;}
+    .tab-btn.active{background:#ef6461;}
+    table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+    th,td{padding:14px 16px;text-align:left;border-bottom:1px solid #eee0c4;font-size:14px;}
+    th{background:#faf1de;font-weight:800;color:#22303f;}
+  </style>
 </head>
 <body>
-<header>
-  <h1>🧸 BD Children's Haven — Admin</h1>
-  <button id="logoutBtn">Log out</button>
-</header>
-<div class="wrap">
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="products">Products</button>
-    <button class="tab-btn" data-tab="orders">Orders</button>
-  </div>
 
-  <div class="panel active" id="panel-products">
-    <div class="row-form">
-      <input id="np-name" placeholder="Product name">
-      <select id="np-category">
-        <option value="toys">Toys</option><option value="learning">Learning</option><option value="dress">Dress</option>
-        <option value="food">Food</option><option value="cosmetics">Cosmetics</option>
-      </select>
-      <input id="np-price" type="number" placeholder="Price ৳">
-      <input id="np-stock" type="number" placeholder="Stock">
-      <input id="np-emoji" placeholder="Emoji" value="🎁">
-      <input id="np-tag" placeholder="Tag (optional)">
-      <button class="add-btn" id="addProductBtn">Add</button>
+  <header>🧸 BD Children's Haven — Admin Dashboard</header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn" onclick="location.href='products.html'">Products</button>
+      <button class="tab-btn active">Orders</button>
     </div>
+
+    <h2>Customer Orders</h2>
     <table>
-      <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Icon</th><th>Tag</th><th>Active</th><th></th></tr></thead>
-      <tbody id="productsBody"></tbody>
+      <thead>
+        <tr>
+          <th>#ID</th>
+          <th>Customer Name</th>
+          <th>Phone</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody id="ordersTableBody">
+        <!-- অর্ডারের ডেটা জাভাস্ক্রিপ্ট দিয়ে এখানে লোড হবে -->
+      </tbody>
     </table>
   </div>
 
-  <div class="panel" id="panel-orders">
-    <table>
-      <thead><tr><th>#</th><th>Customer</th><th>Phone</th><th>Items</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
-      <tbody id="ordersBody"></tbody>
-    </table>
-  </div>
-</div>
+  <script>
+    async function loadOrders() {
+      try {
+        const response = await fetch('/api/orders');
+        const orders = await response.json();
+        const tbody = document.getElementById('ordersTableBody');
+        tbody.innerHTML = '';
 
-<script>
-async function checkAuth(){
-  const res = await fetch('/api/admin/me');
-  const data = await res.json();
-  if (!data.loggedIn) window.location.href = '/admin/login.html';
-}
-checkAuth();
+        if (orders.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#888;">কোনো অর্ডার পাওয়া যায়নি।</td></tr>`;
+          return;
+        }
 
-document.getElementById('logoutBtn').addEventListener('click', async () => {
-  await fetch('/api/admin/logout', { method: 'POST' });
-  window.location.href = '/admin/login.html';
-});
+        orders.forEach(o => {
+          let itemsList = o.items.map(i => `${i.name} (৳${i.price})`).join(', ');
+          tbody.innerHTML += `
+            <tr>
+              <td>#${o.id}</td>
+              <td>${o.customerName}</td>
+              <td>${o.phone}</td>
+              <td>${itemsList}</td>
+              <td>৳ ${o.total}</td>
+              <td><span style="background:#e2f0cb; padding:4px 8px; border-radius:4px; font-weight:700; color:#385e0e;">${o.status}</span></td>
+              <td>${o.date}</td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error('Error loading orders:', err);
+      }
+    }
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
-    if (btn.dataset.tab === 'orders') loadOrders();
-  });
-});
-
-async function loadProducts(){
-  const res = await fetch('/api/admin/products');
-  const items = await res.json();
-  document.getElementById('productsBody').innerHTML = items.map(p => `
-    <tr data-id="${p.id}">
-      <td class="f-name">${p.name}</td>
-      <td class="f-category">${p.category}</td>
-      <td class="f-price">${p.price}</td>
-      <td class="f-stock">${p.stock}</td>
-      <td class="f-emoji">${p.emoji}</td>
-      <td class="f-tag">${p.tag || ''}</td>
-      <td class="f-active">${p.active ? 'Yes' : 'No'}</td>
-      <td>
-        <button class="mini edit-btn" onclick="editRow(${p.id})">Edit</button>
-        <button class="mini del-btn" onclick="deleteProduct(${p.id})">Delete</button>
-      </td>
-    </tr>`).join('');
-}
-
-document.getElementById('addProductBtn').addEventListener('click', async () => {
-  const body = {
-    name: document.getElementById('np-name').value,
-    category: document.getElementById('np-category').value,
-    price: document.getElementById('np-price').value,
-    stock: document.getElementById('np-stock').value,
-    emoji: document.getElementById('np-emoji').value,
-    tag: document.getElementById('np-tag').value,
-  };
-  if (!body.name || !body.price) return alert('Name and price are required.');
-  await fetch('/api/admin/products', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-  document.getElementById('np-name').value = '';
-  document.getElementById('np-price').value = '';
-  document.getElementById('np-stock').value = '';
-  document.getElementById('np-tag').value = '';
-  loadProducts();
-});
-
-async function deleteProduct(id){
-  if (!confirm('Delete this product?')) return;
-  await fetch('/api/admin/products/' + id, { method:'DELETE' });
-  loadProducts();
-}
-
-function editRow(id){
-  const tr = document.querySelector(`tr[data-id="${id}"]`);
-  const name = tr.querySelector('.f-name').textContent;
-  const category = tr.querySelector('.f-category').textContent;
-  const price = tr.querySelector('.f-price').textContent;
-  const stock = tr.querySelector('.f-stock').textContent;
-  const emoji = tr.querySelector('.f-emoji').textContent;
-  const tag = tr.querySelector('.f-tag').textContent;
-  const active = tr.querySelector('.f-active').textContent === 'Yes';
-  tr.innerHTML = `
-    <td><input id="e-name" value="${name}"></td>
-    <td><select id="e-category">
-      ${['toys','learning','dress','food','cosmetics'].map(c=>`<option value="${c}" ${c===category?'selected':''}>${c}</option>`).join('')}
-    </select></td>
-    <td><input id="e-price" type="number" value="${price}"></td>
-    <td><input id="e-stock" type="number" value="${stock}"></td>
-    <td><input id="e-emoji" value="${emoji}"></td>
-    <td><input id="e-tag" value="${tag}"></td>
-    <td><select id="e-active"><option value="1" ${active?'selected':''}>Yes</option><option value="0" ${!active?'selected':''}>No</option></select></td>
-    <td><button class="mini save-btn" onclick="saveRow(${id})">Save</button></td>
-  `;
-}
-
-async function saveRow(id){
-  const body = {
-    name: document.getElementById('e-name').value,
-    category: document.getElementById('e-category').value,
-    price: document.getElementById('e-price').value,
-    stock: document.getElementById('e-stock').value,
-    emoji: document.getElementById('e-emoji').value,
-    tag: document.getElementById('e-tag').value,
-    active: document.getElementById('e-active').value === '1',
-  };
-  await fetch('/api/admin/products/' + id, { method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
-  loadProducts();
-}
-
-async function loadOrders(){
-  const res = await fetch('/api/admin/orders');
-  const orders = await res.json();
-  document.getElementById('ordersBody').innerHTML = orders.map(o => `
-    <tr>
-      <td>${o.id}</td>
-      <td>${o.customer_name}</td>
-      <td>${o.customer_phone}</td>
-      <td>${o.items.map(i=>`${i.name} ×${i.qty}`).join(', ')}</td>
-      <td>৳ ${o.total_amount}</td>
-      <td><span class="status-pill ${o.payment_status}">${o.payment_status}</span></td>
-      <td>${o.created_at}</td>
-    </tr>`).join('');
-}
-
-loadProducts();
-</script>
+    document.addEventListener('DOMContentLoaded', loadOrders);
+  </script>
 </body>
 </html>
