@@ -88,16 +88,31 @@ app.post('/api/orders', (req, res) => {
     items: req.body.items || [],
     total: req.body.total || 0,
     status: 'Pending',
-    date: new Date().toISOString() // সঠিক টাইম স্ট্যান্ডার্ড স্টোর করার জন্য
+    date: new Date().toISOString()
   };
   data.orders.push(newOrder);
   saveData(data);
   res.json({ success: true, order: newOrder });
 });
 
+// অর্ডারের স্ট্যাটাস আপডেট করার API
+app.patch('/api/orders/:id/status', (req, res) => {
+  const data = loadData();
+  const orderId = req.params.id;
+  const newStatus = req.body.status;
+
+  const order = data.orders.find(o => o.id === orderId);
+  if (order) {
+    order.status = newStatus;
+    saveData(data);
+    res.json({ success: true, order });
+  } else {
+    res.status(404).json({ success: false, message: 'Order not found' });
+  }
+});
+
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
-  
   const expectedUser = process.env.ADMIN_USERNAME || 'johirul';
   const expectedPass = process.env.ADMIN_PASSWORD || 'Js30113811';
 
