@@ -10,8 +10,7 @@
     :root{
       --ink:#243858; --denim:#2f4258; --denim-dark:#22303f; --cream:#fdf6ea; --cream-2:#faf1de;
       --sun:#f5c518; --sun-dark:#d9a90f; --coral:#ef6461; --coral-dark:#d6504d;
-      --sky:#3e7cb1; --sky-dark:#2f6293; --rose:#e8789c; --rose-dark:#d15f83;
-      --leaf:#5fa557; --leaf-dark:#478a41; --lav:#9b7fc7; --lav-dark:#8267af;
+      --sky:#3e7cb1; --sky-dark:#2f6293; --leaf:#5fa557; --leaf-dark:#478a41;
     }
     *{box-sizing:border-box;}
     html{scroll-behavior:smooth;}
@@ -20,9 +19,7 @@
     a{text-decoration:none;color:inherit;} ul{list-style:none;margin:0;padding:0;} img{max-width:100%;display:block;}
     .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
     .badge{--sz:64px;width:var(--sz);height:var(--sz);border-radius:50%;display:flex;align-items:center;justify-content:center;
-      background:var(--denim);
-      background-image:repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0 2px, transparent 2px 6px),repeating-linear-gradient(-45deg, rgba(0,0,0,0.12) 0 2px, transparent 2px 6px);
-      box-shadow:0 0 0 3px #e9edf1,0 0 0 5px #b9c2ca,0 6px 14px rgba(34,48,63,0.35); font-size:calc(var(--sz) * 0.42); flex-shrink:0;}
+      background:var(--denim);box-shadow:0 0 0 3px #e9edf1,0 0 0 5px #b9c2ca,0 6px 14px rgba(34,48,63,0.35); font-size:calc(var(--sz) * 0.42); flex-shrink:0;}
     header{position:sticky;top:0;z-index:50;background:rgba(253,246,234,0.92);backdrop-filter:blur(6px);border-bottom:2px solid #eee0c4;}
     .navbar{display:flex;align-items:center;gap:16px;padding:12px 0;}
     .brandmark{display:flex;align-items:center;gap:12px;}
@@ -55,8 +52,9 @@
 
     .prod-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:20px;}
     .card{background:#fff;border-radius:16px;padding:16px;border:2px solid #eee0c4;box-shadow:0 4px 12px rgba(0,0,0,0.03);position:relative;display:flex;flex-direction:column;justify-content:space-between;}
-    .card-img{height:140px;background:var(--cream);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:54px;margin-bottom:12px;position:relative;}
-    .tag{position:absolute;top:8px;left:8px;background:var(--coral);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:99px;text-transform:uppercase;}
+    .card-img{height:140px;background:var(--cream);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:12px;position:relative;overflow:hidden;}
+    .card-img img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
+    .tag{position:absolute;top:8px;left:8px;background:var(--coral);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:99px;text-transform:uppercase;z-index:2;}
     .card h3{margin:0 0 8px;font-size:16px;color:var(--denim-dark);}
     .card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
     .price{font-weight:800;font-size:16px;color:var(--denim-dark);}
@@ -210,7 +208,6 @@
         const response = await fetch('/api/products');
         allProducts = await response.json();
         
-        // গ্রিডগুলো আগে ক্লিয়ার করে নেওয়া যাতে ডুপ্লিকেট না হয়
         ['toys', 'learning', 'dress', 'food', 'cosmetics'].forEach(c => {
           const g = document.getElementById(`grid-${c}`);
           if(g) g.innerHTML = '';
@@ -225,11 +222,14 @@
             if (grid) {
               const card = document.createElement('div');
               card.className = 'card';
+              
+              let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : (p.emoji || '🎁');
+
               card.innerHTML = `
                 <div>
                   <div class="card-img">
                     <span class="tag">${p.tag || 'New'}</span>
-                    ${p.emoji || '🎁'}
+                    ${imgHtml}
                   </div>
                   <h3>${p.name}</h3>
                 </div>
