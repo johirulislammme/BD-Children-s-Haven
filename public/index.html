@@ -79,7 +79,7 @@
   /* Cart drawer */
   .overlay{position:fixed;inset:0;background:rgba(20,28,42,0.45);opacity:0;pointer-events:none;transition:opacity .2s;z-index:200;}
   .overlay.open{opacity:1;pointer-events:auto;}
-  .drawer{position:fixed;top:0;right:0;height:100%;width:380px;max-width:92vw;background:#fff;z-index:201;
+  .drawer{position:fixed;top:0;right:0;height:100%;width:400px;max-width:92vw;background:#fff;z-index:201;
     transform:translateX(100%);transition:transform .25s;display:flex;flex-direction:column;}
   .drawer.open{transform:translateX(0);}
   .drawer-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:2px solid var(--cream-2);}
@@ -148,7 +148,7 @@
     <div class="trust-item">🚚 Fast delivery, all over BD</div>
     <div class="trust-item">🛡️ Safe & tested materials</div>
     <div class="trust-item">↩️ 7-day easy returns</div>
-    <div class="trust-item">💵 bKash · Nagad · Rocket · COD</div>
+    <div class="trust-item">💵 bKash · Nagad · Bank · COD</div>
   </div>
 </section>
 
@@ -203,19 +203,20 @@
       <select id="cf-method" onchange="toggleMethodDetails()">
         <option value="bkash">bKash Personal (সেন্ড মানি)</option>
         <option value="nagad">Nagad Personal (সেন্ড মানি)</option>
+        <option value="bank">BRAC Bank (ডাইরেক্ট ব্যাংক ট্রান্সফার)</option>
         <option value="cod">Cash on Delivery (ক্যাশ অন ডেলিভারি)</option>
       </select>
     </div>
 
     <!-- Instruction Box -->
-    <div id="payment-notice" style="background:#fdf3e7; padding:10px; border-left:4px solid #f5c518; font-size:12px; margin-bottom:12px; border-radius:4px;">
-      আমাদের <strong>bKash Personal</strong> নম্বর: <strong>017XXXXXXXX</strong>-এ টাকা Send Money করুন।
+    <div id="payment-notice" style="background:#fdf3e7; padding:12px; border-left:4px solid #f5c518; font-size:12px; margin-bottom:12px; border-radius:4px; line-height:1.4;">
+      আমাদের <strong>bKash Personal</strong> নম্বর: <strong>01976078375</strong>-এ টাকা Send Money করুন।
     </div>
 
     <!-- Trx Fields -->
     <div id="trx-fields">
-      <div class="form-field"><label>Sender Number (যে নম্বর থেকে টাকা পাঠিয়েছেন)</label><input type="text" id="cf-sender" placeholder="017XXXXXXXX"></div>
-      <div class="form-field"><label>Transaction ID (TrxID)</label><input type="text" id="cf-trxid" placeholder="e.g. 9H87G6F5"></div>
+      <div class="form-field"><label>Sender Number / Acc Name (প্রেরকের তথ্য)</label><input type="text" id="cf-sender" placeholder="নম্বর বা একাউন্ট নাম"></div>
+      <div class="form-field"><label>Transaction ID / Reference (TrxID)</label><input type="text" id="cf-trxid" placeholder="e.g. 9H87G6F5"></div>
     </div>
 
     <button class="btn btn-primary" type="submit">Place Order Now</button>
@@ -228,37 +229,48 @@ let cart = JSON.parse(localStorage.getItem('bch_cart') || '[]');
 let allProducts = {};
 
 async function loadProducts(){
-  for (const cat of CATEGORIES){
-    const grid = document.getElementById('grid-' + cat);
-    try {
-      const res = await fetch('/api/products?category=' + cat);
-      if(!res.ok) throw new Error('Network response was not ok');
-      const items = await res.json();
-      
-      if (!Array.isArray(items) || !items.length){ 
-        grid.innerHTML = '<p class="empty-note">No products available.</p>'; 
-        continue; 
-      }
-      
-      grid.innerHTML = items.map(p => {
+  try {
+    const res = await fetch('/api/products');
+    if (!res.ok) throw new Error('API server failed');
+    const items = await res.json();
+    
+    // Store all products
+    if (Array.isArray(items)) {
+      items.forEach(p => {
         const id = p.id || p._id;
         allProducts[id] = p;
-        const price = p.price ?? p.price_bdt ?? 0;
-        const icon = p.emoji || p.icon || '📦';
-        const tagHtml = p.tag ? `<span class="p-tag">${p.tag}</span>` : '';
-        
-        return `<div class="p-card">
-          ${tagHtml}
-          <div class="p-thumb">${icon}</div>
-          <div class="p-title">${p.name || 'Product'}</div>
-          <div class="p-meta"><span class="p-price">৳ ${price}</span>
-          <button class="p-add" onclick="addToCart('${id}')">+</button></div>
-        </div>`;
-      }).join('');
-    } catch (err) {
-      console.error('Error fetching ' + cat, err);
-      grid.innerHTML = '<p class="empty-note">Unable to load products.</p>';
+      });
     }
+
+    CATEGORIES.forEach(cat => {
+      const grid = document.getElementById('grid-' + cat);
+      const catItems = items.filter(p => p.category && p.category.toLowerCase().trim() === cat);
+      
+      if (!catItems.length){ 
+        grid.innerHTML = '<p class="empty-note">No products available in this category.</p>'; 
+      } else {
+        grid.innerHTML = catItems.map(p => {
+          const id = p.id || p._id;
+          const price = p.price ?? p.price_bdt ?? 0;
+          const icon = p.emoji || p.icon || '📦';
+          const tagHtml = p.tag ? `<span class="p-tag">${p.tag}</span>` : '';
+          
+          return `<div class="p-card">
+            ${tagHtml}
+            <div class="p-thumb">${icon}</div>
+            <div class="p-title">${p.name || 'Product'}</div>
+            <div class="p-meta"><span class="p-price">৳ ${price}</span>
+            <button class="p-add" onclick="addToCart('${id}')">+</button></div>
+          </div>`;
+        }).join('');
+      }
+    });
+
+  } catch (err) {
+    console.error('Error loading products:', err);
+    CATEGORIES.forEach(cat => {
+      document.getElementById('grid-' + cat).innerHTML = '<p class="empty-note">Unable to load products. Please check back later.</p>';
+    });
   }
 }
 
@@ -321,6 +333,15 @@ function toggleMethodDetails(){
   } else if(method === 'nagad') {
     trxFields.style.display = 'block';
     notice.innerHTML = 'আমাদের <strong>Nagad Personal</strong> নম্বর: <strong>01976078375</strong>-এ টাকা Send Money করুন।';
+  } else if(method === 'bank') {
+    trxFields.style.display = 'block';
+    notice.innerHTML = `<strong>Bank Transfer Details:</strong><br>
+      Account Name: <strong>MD. JOHIRUL ISLAM</strong><br>
+      Account Number: <strong>1054605060002</strong><br>
+      Bank: <strong>BRAC Bank PLC</strong><br>
+      Branch: <strong>DHANMONDI BRANCH</strong><br>
+      Routing Number: <strong>060261205</strong><br>
+      SWIFT Code: <strong>BRAKBDDH</strong>`;
   } else {
     trxFields.style.display = 'none';
     notice.innerHTML = 'পণ্য হাতে পেয়ে টাকা পরিশোধ করুন। (ঢাকার বাইরে কুরিয়ার চার্জ অগ্রিম প্রযোজ্য হতে পারে)।';
