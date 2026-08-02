@@ -30,7 +30,7 @@
     th,td{padding:14px 16px;text-align:left;border-bottom:1px solid #eee0c4;font-size:14px;}
     th{background:var(--cream-2);font-weight:800;color:var(--denim-dark);}
     tr:hover{background:#fcf9f2;}
-    .status-badge{background:#e2f0d9;color:#385723;padding:4px 10px;border-radius:99px;font-weight:700;font-size:12px;}
+    .status-select{padding:6px 10px;border-radius:8px;border:2px solid #eee0c4;font-weight:700;font-size:12px;background:#fff;cursor:pointer;}
   </style>
 </head>
 <body>
@@ -92,7 +92,6 @@
         orders.forEach(o => {
           let itemsText = o.items.map(i => `${i.name} (৳${i.price})`).join(', ');
           
-          // বাংলাদেশের টাইমজোন অনুযায়ী সঠিক সময় ফরম্যাট করা
           let formattedDate = o.date;
           try {
             formattedDate = new Date(o.date).toLocaleString('en-US', {
@@ -111,13 +110,39 @@
               <td><span style="color:var(--denim); font-weight:700;">${o.paymentMethod}</span></td>
               <td><small>${itemsText}</small></td>
               <td><strong>৳ ${o.total}</strong></td>
-              <td><span class="status-badge">${o.status}</span></td>
+              <td>
+                <select class="status-select" onchange="updateOrderStatus('${o.id}', this.value)">
+                  <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                  <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                  <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                  <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                </select>
+              </td>
               <td><small>${formattedDate}</small></td>
             </tr>
           `;
         });
       } catch (err) {
         console.error('Error loading orders:', err);
+      }
+    }
+
+    async function updateOrderStatus(orderId, newStatus) {
+      try {
+        const response = await fetch(`/api/orders/${orderId}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert(`অর্ডার #${orderId} এর স্ট্যাটাস সফলভাবে পরিবর্তন করে "${newStatus}" করা হয়েছে!`);
+        } else {
+          alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে।');
+        }
+      } catch (err) {
+        console.error('Error updating status:', err);
+        alert('সার্ভার কানেকশনে সমস্যা হয়েছে!');
       }
     }
 
