@@ -120,7 +120,7 @@
 
       <div class="trust-bar">
         <div class="trust-grid">
-          <span>🚚 Fast delivery, all over BD</span>
+          <span>🚚 ডেলিভারি চার্জ: ঢাকা ভিতর ৭০৳, বাইরে ১০০৳</span>
           <span>🛡️ Safe & tested materials</span>
           <span>🔄 7-day easy returns</span>
           <span>💳 bKash · Nagad · Bank · COD</span>
@@ -169,7 +169,7 @@
       <div class="checkout-form">
         <input type="text" id="custName" placeholder="Full Name">
         <input type="text" id="custPhone" placeholder="Phone Number">
-        <input type="text" id="custAddress" placeholder="Delivery Address">
+        <input type="text" id="custAddress" placeholder="Delivery Address (উল্লেখ করুন: ঢাকার ভিতর নাকি বাইরে)">
         
         <label for="paymentMethod">Select Payment Method:</label>
         <select id="paymentMethod" onchange="togglePaymentInfo()">
@@ -180,7 +180,7 @@
         </select>
 
         <div id="codInfo" class="payment-info" style="display:block;">
-          <strong>Cash on Delivery (COD):</strong> ঢাকার ভিতর এবং বাইরে উভয় ক্ষেত্রেই ডেলিভারি চার্জ অগ্রিম (বিকাশ, নগদ বা ব্যাংকের মাধ্যমে) পরিশোধ করতে হবে।
+          <strong>Cash on Delivery (COD):</strong> ডেলিভারি চার্জ ঢাকার ভিতর ৭০ টাকা এবং ঢাকার বাইরে ১০০ টাকা অগ্রিম (বিকাশ, নগদ বা ব্যাংকের মাধ্যমে) পরিশোধ করতে হবে।
         </div>
         <div id="bkashInfo" class="payment-info">
           <strong>bKash Personal:</strong> 01976078375<br>টাকা পাঠিয়ে ট্রানজেকশন আইডি (TrxID) নোট করুন।
@@ -400,7 +400,6 @@
         const response = await fetch('/api/orders');
         const orders = await response.json();
 
-        // কাস্টমারের ফোন নম্বর অনুযায়ী অর্ডার ফিল্টার করা
         const myOrders = orders.filter(o => o.phone === phone);
 
         if (myOrders.length === 0) {
