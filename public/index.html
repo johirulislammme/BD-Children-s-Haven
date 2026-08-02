@@ -76,13 +76,13 @@
       </div>
       <div class="nav-links">
         <a href="#toys">Toys</a>
-        <a href="#learning">Learning Kits</a>
+        <a href="#learning">Learning</a>
         <a href="#dress">Dress</a>
-        <a href="#foods">Foods</a>
+        <a href="#food">Food</a>
         <a href="#cosmetics">Cosmetics</a>
       </div>
       <button class="cart-btn">
-        🛒 <span class="cart-count">2</span>
+        🛒 <span class="cart-count">0</span>
       </button>
     </div>
   </header>
@@ -96,7 +96,7 @@
         <a href="#toys" class="cat-pill"><div class="badge">🧸</div>Toys</a>
         <a href="#learning" class="cat-pill"><div class="badge">🔬</div>Learning</a>
         <a href="#dress" class="cat-pill"><div class="badge">👗</div>Dress</a>
-        <a href="#foods" class="cat-pill"><div class="badge">🍪</div>Foods</a>
+        <a href="#food" class="cat-pill"><div class="badge">🍪</div>Food</a>
         <a href="#cosmetics" class="cat-pill"><div class="badge">🧴</div>Cosmetics</a>
       </div>
 
@@ -148,8 +148,8 @@
       <div class="prod-grid" id="grid-dress"></div>
     </section>
 
-    <!-- Foods Section -->
-    <section id="foods">
+    <!-- Food Section -->
+    <section id="food">
       <div class="sec-head">
         <div class="badge">🍪</div>
         <div>
@@ -157,7 +157,7 @@
           <p>Organic snacks, cereals & baby food.</p>
         </div>
       </div>
-      <div class="prod-grid" id="grid-foods"></div>
+      <div class="prod-grid" id="grid-food"></div>
     </section>
 
     <!-- Cosmetics Section -->
@@ -180,15 +180,12 @@
   </footer>
 
   <script>
-    // ব্যাকএন্ড API থেকে ডাইনামিক প্রোডাক্ট লোড করার ফাংশন
     async function loadProducts() {
       try {
         const response = await fetch('/api/products');
-        const result = await response.json();
+        const products = await response.json();
         
-        const products = Array.isArray(result) ? result : (result.products || []);
-
-        if (products.length > 0) {
+        if (Array.isArray(products) && products.length > 0) {
           products.forEach(p => {
             const grid = document.getElementById(`grid-${p.category}`);
             if (grid) {
@@ -198,59 +195,22 @@
                 <div>
                   <div class="card-img">
                     <span class="tag">${p.tag || 'New'}</span>
-                    ${p.icon || '🧸'}
+                    ${p.emoji || '🎁'}
                   </div>
                   <h3>${p.name}</h3>
                 </div>
                 <div class="card-footer">
                   <div class="price">৳ ${p.price}</div>
-                  <button class="add-btn" onclick="alert('পণ্যটি কার্ট করা হয়েছে!')">+</button>
+                  <button class="add-btn" onclick="alert('অর্ডার সিস্টেম শীঘ্রই আসছে!')">+</button>
                 </div>
               `;
               grid.appendChild(card);
             }
           });
-        } else {
-          showFallbackDemoData();
         }
       } catch (err) {
         console.error('Error fetching products:', err);
-        showFallbackDemoData();
       }
-    }
-
-    // ব্যাকএন্ডে ডাটা না থাকলে ডেমো ডাটা দেখানোর ফলব্যাক
-    function showFallbackDemoData() {
-      const demoProducts = [
-        { id: 1, name: "Wooden Building Blocks", price: 1200, category: "toys", icon: "🧩", tag: "Best Seller" },
-        { id: 2, name: "Remote Control Racing Car", price: 1850, category: "toys", icon: "🏎️", tag: "Popular" },
-        { id: 4, name: "STEM Microscope Set", price: 2450, category: "learning", icon: "🔬", tag: "Trending" },
-        { id: 6, name: "Cotton Baby Onesie Set", price: 1100, category: "dress", icon: "👶", tag: "Comfort" },
-        { id: 8, name: "Organic Baby Cereal", price: 750, category: "foods", icon: "🥣", tag: "Healthy" },
-        { id: 10, name: "Gentle Baby Lotion (250ml)", price: 890, category: "cosmetics", icon: "🧴", tag: "Gentle" }
-      ];
-      
-      demoProducts.forEach(p => {
-        const grid = document.getElementById(`grid-${p.category}`);
-        if (grid) {
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.innerHTML = `
-            <div>
-              <div class="card-img">
-                <span class="tag">${p.tag}</span>
-                ${p.icon}
-              </div>
-              <h3>${p.name}</h3>
-            </div>
-            <div class="card-footer">
-              <div class="price">৳ ${p.price}</div>
-              <button class="add-btn" onclick="alert('অর্ডার সিস্টেম শীঘ্রই আসছে!')">+</button>
-            </div>
-          `;
-          grid.appendChild(card);
-        }
-      });
     }
 
     document.addEventListener('DOMContentLoaded', loadProducts);
