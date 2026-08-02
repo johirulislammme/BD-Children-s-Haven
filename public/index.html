@@ -192,7 +192,6 @@
     <button class="btn btn-primary" id="checkoutBtn">Checkout</button>
   </div>
   
-  <!-- Updated Manual Payment Form -->
   <form id="checkoutForm">
     <hr style="border:none; border-top: 1px dashed #eee0c4; margin: 15px 0;">
     <div class="form-field"><label>Full Name (আপনার নাম)</label><input type="text" id="cf-name" required placeholder="e.g. Rahat Islam"></div>
@@ -210,7 +209,7 @@
 
     <!-- Instruction Box -->
     <div id="payment-notice" style="background:#fdf3e7; padding:10px; border-left:4px solid #f5c518; font-size:12px; margin-bottom:12px; border-radius:4px;">
-      আমাদের <strong>bKash Personal</strong> নম্বর: <strong>017XXXXXXXX</strong>-এ পেমেন্ট বা ডেলিভারি চার্জ Send Money করুন।
+      আমাদের <strong>bKash Personal</strong> নম্বর: <strong>017XXXXXXXX</strong>-এ টাকা Send Money করুন।
     </div>
 
     <!-- Trx Fields -->
@@ -229,21 +228,33 @@ let cart = JSON.parse(localStorage.getItem('bch_cart') || '[]');
 let allProducts = {};
 
 async function loadProducts(){
-  for (const cat of CATEGORIES){
-    const res = await fetch('/api/products?category=' + cat);
+  try {
+    const res = await fetch('/api/products');
     const items = await res.json();
-    const grid = document.getElementById('grid-' + cat);
-    if (!items.length){ grid.innerHTML = '<p class="empty-note">No products yet — add some from the admin panel.</p>'; continue; }
-    grid.innerHTML = items.map(p => {
-      allProducts[p.id] = p;
-      return `<div class="p-card">
-        ${p.tag ? `<span class="p-tag">${p.tag}</span>` : ''}
-        <div class="p-thumb">${p.emoji}</div>
-        <div class="p-title">${p.name}</div>
-        <div class="p-meta"><span class="p-price">৳ ${p.price}</span>
-        <button class="p-add" onclick="addToCart(${p.id})">+</button></div>
-      </div>`;
-    }).join('');
+    
+    CATEGORIES.forEach(cat => {
+      const grid = document.getElementById('grid-' + cat);
+      const catItems = items.filter(p => p.category && p.category.toLowerCase() === cat);
+      
+      if (!catItems.length){ 
+        grid.innerHTML = '<p class="empty-note">No products yet in this category.</p>'; 
+      } else {
+        grid.innerHTML = catItems.map(p => {
+          allProducts[p.id] = p;
+          const price = p.price || p.price_bdt || 0;
+          const icon = p.emoji || p.icon || '📦';
+          return `<div class="p-card">
+            ${p.tag ? `<span class="p-tag">${p.tag}</span>` : ''}
+            <div class="p-thumb">${icon}</div>
+            <div class="p-title">${p.name}</div>
+            <div class="p-meta"><span class="p-price">৳ ${price}</span>
+            <button class="p-add" onclick="addToCart(${p.id})">+</button></div>
+          </div>`;
+        }).join('');
+      }
+    });
+  } catch (err) {
+    console.error('Failed to load products:', err);
   }
 }
 
@@ -272,9 +283,11 @@ function renderCart(){
     wrap.innerHTML = cart.map(line => {
       const p = allProducts[line.id];
       if (!p) return '';
+      const price = p.price || p.price_bdt || 0;
+      const icon = p.emoji || p.icon || '📦';
       return `<div class="cart-line">
-        <div class="thumb">${p.emoji}</div>
-        <div class="info"><div class="nm">${p.name}</div><div class="pr">৳ ${p.price} × ${line.qty}</div></div>
+        <div class="thumb">${icon}</div>
+        <div class="info"><div class="nm">${p.name}</div><div class="pr">৳ ${price} × ${line.qty}</div></div>
         <div class="qty-ctrl">
           <button onclick="changeQty(${p.id},-1)">−</button>${line.qty}<button onclick="changeQty(${p.id},1)">+</button>
         </div>
@@ -282,7 +295,11 @@ function renderCart(){
       </div>`;
     }).join('');
   }
-  const total = cart.reduce((s,l)=> s + (allProducts[l.id] ? allProducts[l.id].price * l.qty : 0), 0);
+  const total = cart.reduce((s,l)=> {
+    const p = allProducts[l.id];
+    const price = p ? (p.price || p.price_bdt || 0) : 0;
+    return s + (price * l.qty);
+  }, 0);
   document.getElementById('cartTotal').textContent = '৳ ' + total;
 }
 
@@ -296,10 +313,10 @@ function toggleMethodDetails(){
 
   if(method === 'bkash') {
     trxFields.style.display = 'block';
-    notice.innerHTML = 'আমাদের <strong>bKash Personal</strong> নম্বর: <strong>01976078375</strong>-এ টাকা Send Money করুন।';
+    notice.innerHTML = 'আমাদের <strong>bKash Personal</strong> নম্বর: <strong>017XXXXXXXX</strong>-এ টাকা Send Money করুন।';
   } else if(method === 'nagad') {
     trxFields.style.display = 'block';
-    notice.innerHTML = 'আমাদের <strong>Nagad Personal</strong> নম্বর: <strong>01976078375</strong>-এ টাকা Send Money করুন।';
+    notice.innerHTML = 'আমাদের <strong>Nagad Personal</strong> নম্বর: <strong>017XXXXXXXX</strong>-এ টাকা Send Money করুন।';
   } else {
     trxFields.style.display = 'none';
     notice.innerHTML = 'পণ্য হাতে পেয়ে টাকা পরিশোধ করুন। (ঢাকার বাইরে কুরিয়ার চার্জ অগ্রিম প্রযোজ্য হতে পারে)।';
@@ -324,7 +341,11 @@ document.getElementById('checkoutForm').addEventListener('submit', async (e) => 
   const trxId = document.getElementById('cf-trxid').value;
   
   const items = cart.map(l => ({ id: l.id, qty: l.qty }));
-  const totalAmount = cart.reduce((s,l)=> s + (allProducts[l.id] ? allProducts[l.id].price * l.qty : 0), 0);
+  const totalAmount = cart.reduce((s,l)=> {
+    const p = allProducts[l.id];
+    const price = p ? (p.price || p.price_bdt || 0) : 0;
+    return s + (price * l.qty);
+  }, 0);
 
   const res = await fetch('/api/checkout', {
     method: 'POST', 
@@ -335,9 +356,9 @@ document.getElementById('checkoutForm').addEventListener('submit', async (e) => 
   });
 
   const data = await res.json();
-  if (data.success){
+  if (data.success || data.ok){
     localStorage.removeItem('bch_cart');
-    alert('ধন্যবাদ! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে। অর্ডার আইডি: ' + data.orderId);
+    alert('ধন্যবাদ! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।');
     location.reload();
   } else {
     alert(data.error || 'অর্ডার করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
