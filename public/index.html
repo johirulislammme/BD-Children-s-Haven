@@ -161,15 +161,36 @@
     <div class="modal">
       <button class="close-btn" onclick="closeCart()">×</button>
       <h2>Your Shopping Cart</h2>
-      <div id="cartItemsList" style="max-height: 140px; overflow-y: auto; margin-bottom: 10px;"></div>
-      <div style="font-weight: 800; font-size: 18px; display: flex; justify-content: space-between; margin-bottom: 10px;">
-        <span>Total:</span>
-        <span id="cartTotalPrice">৳ 0</span>
+      <div id="cartItemsList" style="max-height: 130px; overflow-y: auto; margin-bottom: 10px;"></div>
+      
+      <!-- বিল সামারি -->
+      <div style="background:var(--cream-2); padding: 12px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; border: 1px solid #eee0c4;">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+          <span>Subtotal:</span>
+          <span id="cartSubtotal">৳ 0</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span>Delivery Charge:</span>
+          <span id="deliveryChargeText">৳ 0</span>
+        </div>
+        <hr style="border:0; border-top:1px solid #d9ccb3; margin: 6px 0;">
+        <div style="font-weight: 800; font-size: 17px; display: flex; justify-content: space-between; color: var(--denim-dark);">
+          <span>Final Total:</span>
+          <span id="cartTotalPrice">৳ 0</span>
+        </div>
       </div>
+
       <div class="checkout-form">
         <input type="text" id="custName" placeholder="Full Name">
         <input type="text" id="custPhone" placeholder="Phone Number">
-        <input type="text" id="custAddress" placeholder="Delivery Address (উল্লেখ করুন: ঢাকার ভিতর নাকি বাইরে)">
+        
+        <label for="deliveryArea">Delivery Location:</label>
+        <select id="deliveryArea" onchange="updateTotalCalculation()">
+          <option value="inside">ঢাকার ভিতর (৭০ টাকা)</option>
+          <option value="outside">ঢাকার বাইরে (১০০ টাকা)</option>
+        </select>
+
+        <input type="text" id="custAddress" placeholder="Full Delivery Address (Area, Road, House)">
         
         <label for="paymentMethod">Select Payment Method:</label>
         <select id="paymentMethod" onchange="togglePaymentInfo()">
@@ -180,7 +201,7 @@
         </select>
 
         <div id="codInfo" class="payment-info" style="display:block;">
-          <strong>Cash on Delivery (COD):</strong> ডেলিভারি চার্জ ঢাকার ভিতর ৭০ টাকা এবং ঢাকার বাইরে ১০০ টাকা অগ্রিম (বিকাশ, নগদ বা ব্যাংকের মাধ্যমে) পরিশোধ করতে হবে।
+          <strong>Cash on Delivery (COD):</strong> ডেলিভারি চার্জ (ঢাকার ভিতর ৭০৳ / বাইরে ১০০৳) অগ্রিম (বিকাশ, নগদ বা ব্যাংকের মাধ্যমে) পরিশোধ করতে হবে।
         </div>
         <div id="bkashInfo" class="payment-info">
           <strong>bKash Personal:</strong> 01976078375<br>টাকা পাঠিয়ে ট্রানজেকশন আইডি (TrxID) নোট করুন।
@@ -289,13 +310,11 @@
     function openCart() {
       const list = document.getElementById('cartItemsList');
       list.innerHTML = '';
-      let total = 0;
 
       if (cart.length === 0) {
         list.innerHTML = '<p style="text-align:center; color:#888;">কার্ট খালি আছে!</p>';
       } else {
         cart.forEach((item, index) => {
-          total += item.price;
           list.innerHTML += `
             <div class="cart-item">
               <div><strong>${item.name}</strong><br><small>৳ ${item.price}</small></div>
@@ -304,9 +323,25 @@
           `;
         });
       }
-      document.getElementById('cartTotalPrice').innerText = '৳ ' + total;
+      updateTotalCalculation();
       document.getElementById('cartModal').style.display = 'flex';
       togglePaymentInfo();
+    }
+
+    function updateTotalCalculation() {
+      let subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+      let area = document.getElementById('deliveryArea').value;
+      let deliveryFee = (area === 'inside') ? 70 : 100;
+
+      if (cart.length === 0) {
+        deliveryFee = 0;
+      }
+
+      let finalTotal = subtotal + deliveryFee;
+
+      document.getElementById('cartSubtotal').innerText = '৳ ' + subtotal;
+      document.getElementById('deliveryChargeText').innerText = '৳ ' + deliveryFee;
+      document.getElementById('cartTotalPrice').innerText = '৳ ' + finalTotal;
     }
 
     function closeCart() {
@@ -330,11 +365,12 @@
     async function checkoutOrder() {
       const name = document.getElementById('custName').value;
       const phone = document.getElementById('custPhone').value;
-      const address = document.getElementById('custAddress').value;
+      const area = document.getElementById('deliveryArea').value;
+      const addressText = document.getElementById('custAddress').value;
       const paymentMethod = document.getElementById('paymentMethod').value;
 
-      if (!name || !phone || !address) {
-        alert('দয়া করে আপনার নাম, ফোন নম্বর এবং ঠিকানা দিন।');
+      if (!name || !phone || !addressText) {
+        alert('দয়া করে আপনার নাম, ফোন নম্বর এবং সম্পূর্ণ ঠিকানা দিন।');
         return;
       }
 
@@ -343,12 +379,15 @@
         return;
       }
 
-      let total = cart.reduce((sum, item) => sum + item.price, 0);
+      let subtotal = cart.reduce((sum, item) => sum + item.price, 0);
+      let deliveryFee = (area === 'inside') ? 70 : 100;
+      let total = subtotal + deliveryFee;
+      let fullAddress = `${addressText} (${area === 'inside' ? 'ঢাকার ভিতর' : 'ঢাকার বাইরে'})`;
 
       const orderData = {
         name,
         phone,
-        address,
+        address: fullAddress,
         paymentMethod,
         items: cart,
         total
@@ -363,7 +402,7 @@
 
         const result = await response.json();
         if (result.success) {
-          alert('ধন্যবাদ ' + name + '! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। অর্ডার আইডি: #' + result.order.id);
+          alert('ধন্যবাদ ' + name + '! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। ফাইনাল বিল: ৳' + total + ' (অর্ডার আইডি: #' + result.order.id + ')');
           cart = [];
           updateCartCount();
           closeCart();
@@ -429,7 +468,7 @@
                 <strong>Items:</strong> ${itemsText}
               </div>
               <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700; color:var(--ink);">
-                <span>Total: ৳ ${o.total} (${o.paymentMethod})</span>
+                <span>Final Total: ৳ ${o.total} (${o.paymentMethod})</span>
                 <span style="color:#777; font-size:11px;">${formattedDate}</span>
               </div>
             </div>
