@@ -17,7 +17,8 @@
     }
     *{box-sizing:border-box;}
     body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);}
-    header{background:var(--denim-dark);color:#fff;padding:16px 24px;font-weight:800;font-size:20px;display:flex;align-items:center;gap:10px;}
+    header{background:var(--denim-dark);color:#fff;padding:16px 24px;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:space-between;}
+    .logout-btn{background:var(--coral);color:#fff;border:none;padding:6px 14px;border-radius:6px;font-weight:700;cursor:pointer;font-size:14px;}
     .container{max-width:1200px;margin:30px auto;padding:0 20px;}
     .tabs{display:flex;gap:12px;margin-bottom:24px;}
     .tab-btn{background:var(--denim);color:#fff;border:none;padding:10px 20px;border-radius:99px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
@@ -29,12 +30,15 @@
     th,td{padding:14px 16px;text-align:left;border-bottom:1px solid #eee0c4;font-size:14px;}
     th{background:var(--cream-2);font-weight:800;color:var(--denim-dark);}
     tr:hover{background:#fcf9f2;}
-    .status-badge{background:#e2f0cb;padding:6px 12px;border-radius:99px;font-weight:700;color:#385e0e;display:inline-block;font-size:12px;}
+    .status-badge{background:#e2f0d9;color:#385723;padding:4px 10px;border-radius:99px;font-weight:700;font-size:12px;}
   </style>
 </head>
 <body>
 
-  <header>🧸 BD Children's Haven — Admin Dashboard</header>
+  <header>
+    <span>🧸 BD Children's Haven — Admin Dashboard</span>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </header>
 
   <div class="container">
     <div class="tabs">
@@ -60,7 +64,6 @@
             </tr>
           </thead>
           <tbody id="ordersTableBody">
-            <!-- জাভাস্ক্রিপ্ট দিয়ে অর্ডারগুলো এখানে ডায়নামিকালি লোড হবে -->
             <tr><td colspan="9" style="text-align:center; color:#888;">লোডিং হচ্ছে...</td></tr>
           </tbody>
         </table>
@@ -69,6 +72,11 @@
   </div>
 
   <script>
+    function logout() {
+      localStorage.removeItem('isAdminLoggedIn');
+      window.location.href = 'login.html';
+    }
+
     async function loadOrders() {
       try {
         const response = await fetch('/api/orders');
@@ -77,38 +85,42 @@
         tbody.innerHTML = '';
 
         if (!Array.isArray(orders) || orders.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#888; padding:20px;">এখনো কোনো অর্ডার পাওয়া যায়নি।</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#888; padding:20px;">কোনো অর্ডার পাওয়া যায়নি।</td></tr>`;
           return;
         }
 
         orders.forEach(o => {
-          // আইটেমগুলোর নাম ও দাম সুন্দরভাবে ফরম্যাট করা
-          let itemsList = 'N/A';
-          if (Array.isArray(o.items) && o.items.length > 0) {
-            itemsList = o.items.map(i => `${i.name} (৳${i.price})`).join(', ');
-          }
+          let itemsText = o.items.map(i => `${i.name} (৳${i.price})`).join(', ');
+          
+          // বাংলাদেশের টাইমজোন অনুযায়ী সঠিক সময় ফরম্যাট করা
+          let formattedDate = o.date;
+          try {
+            formattedDate = new Date(o.date).toLocaleString('en-US', {
+              timeZone: 'Asia/Dhaka',
+              dateStyle: 'short',
+              timeStyle: 'medium'
+            });
+          } catch(e) {}
 
           tbody.innerHTML += `
             <tr>
               <td><strong>#${o.id}</strong></td>
-              <td>${o.customerName || 'N/A'}</td>
-              <td>${o.phone || 'N/A'}</td>
-              <td>${o.address || 'N/A'}</td>
-              <td><span style="font-weight:700; color:#3e7cb1;">${o.paymentMethod || 'COD'}</span></td>
-              <td><div style="max-width:200px; word-break:break-word;">${itemsList}</div></td>
-              <td><strong>৳ ${o.total || 0}</strong></td>
-              <td><span class="status-badge">${o.status || 'Pending'}</span></td>
-              <td><small>${o.date || ''}</small></td>
+              <td>${o.customerName}</td>
+              <td>${o.phone}</td>
+              <td>${o.address}</td>
+              <td><span style="color:var(--denim); font-weight:700;">${o.paymentMethod}</span></td>
+              <td><small>${itemsText}</small></td>
+              <td><strong>৳ ${o.total}</strong></td>
+              <td><span class="status-badge">${o.status}</span></td>
+              <td><small>${formattedDate}</small></td>
             </tr>
           `;
         });
       } catch (err) {
         console.error('Error loading orders:', err);
-        document.getElementById('ordersTableBody').innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--coral);">অর্ডার লোড করতে সমস্যা হয়েছে! সার্ভার কানেকশন চেক করুন।</td></tr>`;
       }
     }
 
-    // পেজ লোড হওয়ার সাথে সাথে অর্ডার ফেচ করা
     document.addEventListener('DOMContentLoaded', loadOrders);
   </script>
 </body>
