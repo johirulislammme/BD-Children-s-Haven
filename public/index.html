@@ -63,13 +63,15 @@
     .add-btn{background:var(--coral);color:#fff;border:none;width:32px;height:32px;border-radius:50%;font-size:18px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 0 var(--coral-dark);}
     .add-btn:hover{background:var(--coral-dark);}
 
-    /* Modal / Drawer styles */
+    /* Modal styles */
     .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(36,56,88,0.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;}
-    .modal{background:#fff;width:100%;max-width:480px;border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,0.15);position:relative;}
+    .modal{background:#fff;width:100%;max-width:480px;border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,0.15);position:relative;max-height: 90vh; overflow-y: auto;}
     .modal h2{margin-top:0;color:var(--denim-dark);}
     .cart-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee0c4;}
     .close-btn{background:none;border:none;font-size:20px;cursor:pointer;position:absolute;top:16px;right:16px;}
-    .checkout-form input{width:100%;padding:10px;margin:8px 0;border:2px solid #eee0c4;border-radius:8px;font-family:inherit;}
+    .checkout-form input, .checkout-form select{width:100%;padding:10px;margin:6px 0;border:2px solid #eee0c4;border-radius:8px;font-family:inherit;background:#fff;}
+    .checkout-form label{font-weight:700;font-size:13px;color:var(--denim-dark);display:block;margin-top:6px;}
+    .payment-info{background:var(--cream-2);padding:10px;border-radius:8px;font-size:12px;margin:8px 0;color:var(--denim-dark);border:1px dashed #eee0c4;display:none;line-height: 1.5;}
     .checkout-btn{width:100%;background:var(--leaf);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:800;font-size:16px;cursor:pointer;margin-top:12px;}
     .checkout-btn:hover{background:var(--leaf-dark);}
 
@@ -153,8 +155,8 @@
     <div class="modal">
       <button class="close-btn" onclick="closeCart()">×</button>
       <h2>Your Shopping Cart</h2>
-      <div id="cartItemsList" style="max-height: 180px; overflow-y: auto; margin-bottom: 16px;"></div>
-      <div style="font-weight: 800; font-size: 18px; display: flex; justify-content: space-between; margin-bottom: 16px;">
+      <div id="cartItemsList" style="max-height: 140px; overflow-y: auto; margin-bottom: 10px;"></div>
+      <div style="font-weight: 800; font-size: 18px; display: flex; justify-content: space-between; margin-bottom: 10px;">
         <span>Total:</span>
         <span id="cartTotalPrice">৳ 0</span>
       </div>
@@ -162,6 +164,32 @@
         <input type="text" id="custName" placeholder="Full Name">
         <input type="text" id="custPhone" placeholder="Phone Number">
         <input type="text" id="custAddress" placeholder="Delivery Address">
+        
+        <label for="paymentMethod">Select Payment Method:</label>
+        <select id="paymentMethod" onchange="togglePaymentInfo()">
+          <option value="COD">Cash on Delivery (COD)</option>
+          <option value="bKash">bKash</option>
+          <option value="Nagad">Nagad</option>
+          <option value="Bank">Bank Transfer (BRAC Bank)</option>
+        </select>
+
+        <div id="codInfo" class="payment-info" style="display:block;">
+          <strong>Cash on Delivery (COD):</strong> ঢাকার ভিতর এবং বাইরে উভয় ক্ষেত্রেই ডেলিভারি চার্জ অগ্রিম (বিকাশ, নগদ বা ব্যাংকের মাধ্যমে) পরিশোধ করতে হবে।
+        </div>
+        <div id="bkashInfo" class="payment-info">
+          <strong>bKash Personal:</strong> 01976078375<br>টাকা পাঠিয়ে ট্রানজেকশন আইডি (TrxID) নোট করুন।
+        </div>
+        <div id="nagadInfo" class="payment-info">
+          <strong>Nagad Personal:</strong> 01976078375<br>টাকা পাঠিয়ে ট্রানজেকশন আইডি (TrxID) নোট করুন।
+        </div>
+        <div id="bankInfo" class="payment-info">
+          <strong>BRAC Bank PLC (Dhanmondi Branch)</strong><br>
+          Account Name: MD. JOHIRUL ISLAM<br>
+          Account Number: 1054605060002<br>
+          Routing Number: 060261205<br>
+          SWIFT Code: BRAKBDDH
+        </div>
+
         <button class="checkout-btn" onclick="checkoutOrder()">Confirm Order</button>
       </div>
     </div>
@@ -232,7 +260,7 @@
       let total = 0;
 
       if (cart.length === 0) {
-        list.innerHTML = '<p style="text-align:center; color:#88itude;">কার্ট খালি আছে!</p>';
+        list.innerHTML = '<p style="text-align:center; color:#888;">কার্ট খালি আছে!</p>';
       } else {
         cart.forEach((item, index) => {
           total += item.price;
@@ -246,6 +274,7 @@
       }
       document.getElementById('cartTotalPrice').innerText = '৳ ' + total;
       document.getElementById('cartModal').style.display = 'flex';
+      togglePaymentInfo();
     }
 
     function closeCart() {
@@ -258,10 +287,19 @@
       openCart();
     }
 
+    function togglePaymentInfo() {
+      const method = document.getElementById('paymentMethod').value;
+      document.getElementById('codInfo').style.display = (method === 'COD') ? 'block' : 'none';
+      document.getElementById('bkashInfo').style.display = (method === 'bKash') ? 'block' : 'none';
+      document.getElementById('nagadInfo').style.display = (method === 'Nagad') ? 'block' : 'none';
+      document.getElementById('bankInfo').style.display = (method === 'Bank') ? 'block' : 'none';
+    }
+
     function checkoutOrder() {
       const name = document.getElementById('custName').value;
       const phone = document.getElementById('custPhone').value;
       const address = document.getElementById('custAddress').value;
+      const payment = document.getElementById('paymentMethod').value;
 
       if (!name || !phone || !address) {
         alert('দয়া করে আপনার নাম, ফোন নম্বর এবং ঠিকানা দিন।');
@@ -273,7 +311,7 @@
         return;
       }
 
-      alert('ধন্যবাদ ' + name + '! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। খুব শীঘ্রই আপনার সাথে যোগাযোগ করা হবে।');
+      alert('ধন্যবাদ ' + name + '! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। পেমেন্ট মাধ্যম: ' + payment + '। ক্যাশ অন ডেলিভারি হলেও ঢাকার ভিতর বা বাইরে ডেলিভারি চার্জ অগ্রিম পরিশোধ করতে হবে। খুব শীঘ্রই আপনার সাথে যোগাযোগ করা হবে।');
       cart = [];
       updateCartCount();
       closeCart();
