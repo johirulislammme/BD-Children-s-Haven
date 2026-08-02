@@ -9,24 +9,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// ইন-মেমোরি বা ফাইল বেসড ডেটা (প্রোডাক্ট ও অর্ডার)
 const DATA_FILE = path.join(__dirname, 'data.json');
 
-// ডিফল্ট ডেটা যদি ফাইল না থাকে
 function getInitialData() {
   return {
     products: [
-      { id: 1, name: "DC Circuit Kit", price: 1000, category: "Toys", tag: "New", emoji: "🧸" },
-      { id: 2, name: 'Rotating World Globe, 8"', price: 950, category: "Learning", tag: "Sale", emoji: "🌍" },
-      { id: 3, name: "Kids Cotton Frock", price: 650, category: "Dress", tag: "New", emoji: "👗" },
-      { id: 4, name: "Organic Honey Nuts", price: 450, category: "Food", tag: "Hot", emoji: "🍯" },
-      { id: 5, name: "Baby Gentle Lotion", price: 350, category: "Cosmetics", tag: "New", emoji: "🧴" }
+      { id: 1, name: "DC Circuit Kit", price: 1000, category: "Toys", tag: "New", emoji: "🧸", image: "" },
+      { id: 2, name: 'Rotating World Globe, 8"', price: 950, category: "Learning", tag: "Sale", emoji: "🌍", image: "" },
+      { id: 3, name: "Kids Cotton Frock", price: 650, category: "Dress", tag: "New", emoji: "👗", image: "" },
+      { id: 4, name: "Organic Honey Nuts", price: 450, category: "Food", tag: "Hot", emoji: "🍯", image: "" },
+      { id: 5, name: "Baby Gentle Lotion", price: 350, category: "Cosmetics", tag: "New", emoji: "🧴", image: "" }
     ],
     orders: []
   };
 }
 
-// ডেটা লোড করার ফাংশন
 function loadData() {
   if (!fs.existsSync(DATA_FILE)) {
     const initial = getInitialData();
@@ -41,20 +38,16 @@ function loadData() {
   }
 }
 
-// ডেটা সেভ করার ফাংশন
 function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
 }
 
-// --- API Endpoints ---
-
-// ১. সব প্রোডাক্ট ফেচ করার জন্য
+// API Endpoints
 app.get('/api/products', (req, res) => {
   const data = loadData();
   res.json(data.products);
 });
 
-// ২. নতুন প্রোডাক্ট যোগ করার জন্য (অ্যাডমিন)
 app.post('/api/products', (req, res) => {
   const data = loadData();
   const newProduct = {
@@ -63,14 +56,14 @@ app.post('/api/products', (req, res) => {
     price: Number(req.body.price),
     category: req.body.category,
     tag: req.body.tag || 'New',
-    emoji: req.body.emoji || '🎁'
+    emoji: req.body.emoji || '🎁',
+    image: req.body.image || ''
   };
   data.products.push(newProduct);
   saveData(data);
   res.json({ success: true, product: newProduct });
 });
 
-// ৩. প্রোডাক্ট ডিলিট করার জন্য (অ্যাডমিন)
 app.delete('/api/products/:id', (req, res) => {
   const data = loadData();
   const id = Number(req.params.id);
@@ -79,13 +72,11 @@ app.delete('/api/products/:id', (req, res) => {
   res.json({ success: true });
 });
 
-// ৪. অর্ডার লিস্ট দেখার জন্য (অ্যাডমিন)
 app.get('/api/orders', (req, res) => {
   const data = loadData();
   res.json(data.orders);
 });
 
-// ৫. নতুন অর্ডার প্লেস করার জন্য
 app.post('/api/orders', (req, res) => {
   const data = loadData();
   const newOrder = {
@@ -97,14 +88,13 @@ app.post('/api/orders', (req, res) => {
     items: req.body.items || [],
     total: req.body.total || 0,
     status: 'Pending',
-    date: new Date().toLocaleString()
+    date: new Date().toISOString() // সঠিক টাইম স্ট্যান্ডার্ড স্টোর করার জন্য
   };
   data.orders.push(newOrder);
   saveData(data);
   res.json({ success: true, order: newOrder });
 });
 
-// ৬. অ্যাডমিন লগইন চেক করার API (এনভায়রনমেন্ট ভেরিয়েবল এবং ফলব্যাক সহ)
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
   
