@@ -228,52 +228,56 @@ let cart = JSON.parse(localStorage.getItem('bch_cart') || '[]');
 let allProducts = {};
 
 async function loadProducts(){
-  try {
-    const res = await fetch('/api/products');
-    const items = await res.json();
-    
-    CATEGORIES.forEach(cat => {
-      const grid = document.getElementById('grid-' + cat);
-      const catItems = items.filter(p => p.category && p.category.toLowerCase() === cat);
+  for (const cat of CATEGORIES){
+    const grid = document.getElementById('grid-' + cat);
+    try {
+      const res = await fetch('/api/products?category=' + cat);
+      if(!res.ok) throw new Error('Network response was not ok');
+      const items = await res.json();
       
-      if (!catItems.length){ 
-        grid.innerHTML = '<p class="empty-note">No products yet in this category.</p>'; 
-      } else {
-        grid.innerHTML = catItems.map(p => {
-          allProducts[p.id] = p;
-          const price = p.price || p.price_bdt || 0;
-          const icon = p.emoji || p.icon || '📦';
-          return `<div class="p-card">
-            ${p.tag ? `<span class="p-tag">${p.tag}</span>` : ''}
-            <div class="p-thumb">${icon}</div>
-            <div class="p-title">${p.name}</div>
-            <div class="p-meta"><span class="p-price">৳ ${price}</span>
-            <button class="p-add" onclick="addToCart(${p.id})">+</button></div>
-          </div>`;
-        }).join('');
+      if (!Array.isArray(items) || !items.length){ 
+        grid.innerHTML = '<p class="empty-note">No products available.</p>'; 
+        continue; 
       }
-    });
-  } catch (err) {
-    console.error('Failed to load products:', err);
+      
+      grid.innerHTML = items.map(p => {
+        const id = p.id || p._id;
+        allProducts[id] = p;
+        const price = p.price ?? p.price_bdt ?? 0;
+        const icon = p.emoji || p.icon || '📦';
+        const tagHtml = p.tag ? `<span class="p-tag">${p.tag}</span>` : '';
+        
+        return `<div class="p-card">
+          ${tagHtml}
+          <div class="p-thumb">${icon}</div>
+          <div class="p-title">${p.name || 'Product'}</div>
+          <div class="p-meta"><span class="p-price">৳ ${price}</span>
+          <button class="p-add" onclick="addToCart('${id}')">+</button></div>
+        </div>`;
+      }).join('');
+    } catch (err) {
+      console.error('Error fetching ' + cat, err);
+      grid.innerHTML = '<p class="empty-note">Unable to load products.</p>';
+    }
   }
 }
 
 function saveCart(){ localStorage.setItem('bch_cart', JSON.stringify(cart)); renderCart(); }
 
 function addToCart(id){
-  const line = cart.find(l => l.id === id);
+  const line = cart.find(l => l.id == id);
   if (line) line.qty++; else cart.push({ id, qty: 1 });
   saveCart();
   openDrawer();
 }
 function changeQty(id, delta){
-  const line = cart.find(l => l.id === id);
+  const line = cart.find(l => l.id == id);
   if (!line) return;
   line.qty += delta;
-  if (line.qty <= 0) cart = cart.filter(l => l.id !== id);
+  if (line.qty <= 0) cart = cart.filter(l => l.id != id);
   saveCart();
 }
-function removeLine(id){ cart = cart.filter(l => l.id !== id); saveCart(); }
+function removeLine(id){ cart = cart.filter(l => l.id != id); saveCart(); }
 
 function renderCart(){
   document.getElementById('cartCount').textContent = cart.reduce((s,l)=>s+l.qty,0);
@@ -283,21 +287,21 @@ function renderCart(){
     wrap.innerHTML = cart.map(line => {
       const p = allProducts[line.id];
       if (!p) return '';
-      const price = p.price || p.price_bdt || 0;
+      const price = p.price ?? p.price_bdt ?? 0;
       const icon = p.emoji || p.icon || '📦';
       return `<div class="cart-line">
         <div class="thumb">${icon}</div>
         <div class="info"><div class="nm">${p.name}</div><div class="pr">৳ ${price} × ${line.qty}</div></div>
         <div class="qty-ctrl">
-          <button onclick="changeQty(${p.id},-1)">−</button>${line.qty}<button onclick="changeQty(${p.id},1)">+</button>
+          <button onclick="changeQty('${line.id}',-1)">−</button>${line.qty}<button onclick="changeQty('${line.id}',1)">+</button>
         </div>
-        <button class="rm-btn" onclick="removeLine(${p.id})">Remove</button>
+        <button class="rm-btn" onclick="removeLine('${line.id}')">Remove</button>
       </div>`;
     }).join('');
   }
   const total = cart.reduce((s,l)=> {
     const p = allProducts[l.id];
-    const price = p ? (p.price || p.price_bdt || 0) : 0;
+    const price = p ? (p.price ?? p.price_bdt ?? 0) : 0;
     return s + (price * l.qty);
   }, 0);
   document.getElementById('cartTotal').textContent = '৳ ' + total;
@@ -343,25 +347,29 @@ document.getElementById('checkoutForm').addEventListener('submit', async (e) => 
   const items = cart.map(l => ({ id: l.id, qty: l.qty }));
   const totalAmount = cart.reduce((s,l)=> {
     const p = allProducts[l.id];
-    const price = p ? (p.price || p.price_bdt || 0) : 0;
+    const price = p ? (p.price ?? p.price_bdt ?? 0) : 0;
     return s + (price * l.qty);
   }, 0);
 
-  const res = await fetch('/api/checkout', {
-    method: 'POST', 
-    headers: {'Content-Type':'application/json'},
-    body: JSON.stringify({ 
-      customerName, phone, address, paymentMethod, senderNumber, trxId, items, totalAmount 
-    })
-  });
+  try {
+    const res = await fetch('/api/checkout', {
+      method: 'POST', 
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ 
+        customerName, phone, address, paymentMethod, senderNumber, trxId, items, totalAmount 
+      })
+    });
 
-  const data = await res.json();
-  if (data.success || data.ok){
-    localStorage.removeItem('bch_cart');
-    alert('ধন্যবাদ! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।');
-    location.reload();
-  } else {
-    alert(data.error || 'অর্ডার করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+    const data = await res.json();
+    if (res.ok || data.success || data.ok){
+      localStorage.removeItem('bch_cart');
+      alert('ধন্যবাদ! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।');
+      location.reload();
+    } else {
+      alert(data.error || 'অর্ডার করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+    }
+  } catch (err) {
+    alert('নেটওয়ার্ক সমস্যা। আবার চেষ্টা করুন।');
   }
 });
 
