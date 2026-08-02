@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BD Children's Haven — Manage Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #243858;
+      --denim: #2f4258;
+      --denim-dark: #22303f;
+      --cream: #fdf6ea;
+      --cream-2: #faf1de;
+      --coral: #ef6461;
+      --leaf: #5fa557;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);}
+    header{background:var(--denim-dark);color:#fff;padding:16px 24px;font-weight:800;font-size:20px;display:flex;align-items:center;gap:10px;}
+    .container{max-width:1200px;margin:30px auto;padding:0 20px;}
+    .tabs{display:flex;gap:12px;margin-bottom:24px;}
+    .tab-btn{background:var(--denim);color:#fff;border:none;padding:10px 20px;border-radius:99px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+    .tab-btn.active{background:var(--coral);}
+    .card-box{background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.05);border:2px solid #eee0c4;margin-bottom:30px;}
+    h2{margin-top:0;color:var(--denim-dark);}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:15px;margin-bottom:15px;}
+    input, select{width:100%;padding:10px;border:2px solid #eee0c4;border-radius:8px;font-family:inherit;background:#fff;}
+    .add-prod-btn{background:var(--leaf);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-weight:800;cursor:pointer;}
+    .add-prod-btn:hover{background:#4a8b43;}
+    .table-responsive{width:100%;overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;margin-top:10px;}
+    th,td{padding:14px 16px;text-align:left;border-bottom:1px solid #eee0c4;font-size:14px;}
+    th{background:var(--cream-2);font-weight:800;color:var(--denim-dark);}
+    tr:hover{background:#fcf9f2;}
+    .del-btn{background:var(--coral);color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;}
+  </style>
+</head>
+<body>
+
+  <header>🧸 BD Children's Haven — Admin Panel</header>
+
+  <div class="container">
+    <div class="tabs">
+      <a href="products.html" class="tab-btn active">Products</a>
+      <a href="dashboard.html" class="tab-btn">Orders</a>
+    </div>
+
+    <!-- নতুন প্রোডাক্ট যোগ করার ফর্ম -->
+    <div class="card-box">
+      <h2>Add New Product</h2>
+      <form id="addProductForm" onsubmit="addNewProduct(event)">
+        <div class="form-grid">
+          <input type="text" id="prodName" placeholder="Product Name" required>
+          <input type="number" id="prodPrice" placeholder="Price (BDT)" required>
+          <select id="prodCategory" required>
+            <option value="">Select Category</option>
+            <option value="Toys">Toys</option>
+            <option value="Learning">Learning</option>
+            <option value="Dress">Dress</option>
+            <option value="Food">Food</option>
+            <option value="Cosmetics">Cosmetics</option>
+          </select>
+          <input type="text" id="prodTag" placeholder="Tag (e.g. New, Sale, Hot)">
+          <input type="text" id="prodEmoji" placeholder="Emoji (e.g. 🧸, 🚗)" required>
+        </div>
+        <button type="submit" class="add-prod-btn">+ Add Product</button>
+      </form>
+    </div>
+
+    <!-- বর্তমান প্রোডাক্টগুলোর লিস্ট -->
+    <div class="card-box">
+      <h2>Existing Products List</h2>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>Emoji</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Tag</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="productsTableBody">
+            <tr><td colspan="6" style="text-align:center; color:#888;">লোডিং হচ্ছে...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    async function loadProducts() {
+      try {
+        const response = await fetch('/api/products');
+        const products = await response.json();
+        const tbody = document.getElementById('productsTableBody');
+        tbody.innerHTML = '';
+
+        if (!Array.isArray(products) || products.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#888; padding:20px;">কোনো প্রোডাক্ট পাওয়া যায়নি।</td></tr>`;
+          return;
+        }
+
+        products.forEach(p => {
+          tbody.innerHTML += `
+            <tr>
+              <td style="font-size:24px;">${p.emoji || '🎁'}</td>
+              <td><strong>${p.name}</strong></td>
+              <td>${p.category || 'N/A'}</td>
+              <td>৳ ${p.price}</td>
+              <td><span style="background:#eee; padding:3px 8px; border-radius:4px; font-size:12px;">${p.tag || 'New'}</span></td>
+              <td><button class="del-btn" onclick="deleteProduct(${p.id})">Delete</button></td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error('Error loading products:', err);
+      }
+    }
+
+    async function addNewProduct(e) {
+      e.preventDefault();
+      const name = document.getElementById('prodName').value;
+      const price = document.getElementById('prodPrice').value;
+      const category = document.getElementById('prodCategory').value;
+      const tag = document.getElementById('prodTag').value || 'New';
+      const emoji = document.getElementById('prodEmoji').value;
+
+      try {
+        const response = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, price, category, tag, emoji })
+        });
+        const result = await response.json();
+        if (result.success) {
+          alert('প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!');
+          document.getElementById('addProductForm').reset();
+          loadProducts();
+        } else {
+          alert('প্রোডাক্ট যোগ করতে সমস্যা হয়েছে।');
+        }
+      } catch (err) {
+        console.error('Error adding product:', err);
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (!confirm('আপনি কি এই প্রোডাক্টটি ডিলিট করতে চান?')) return;
+      try {
+        const response = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+          loadProducts();
+        } else {
+          alert('ডিলিট করা যায়নি!');
+        }
+      } catch (err) {
+        console.error('Error deleting product:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadProducts);
+  </script>
+</body>
+</html>
