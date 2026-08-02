@@ -179,7 +179,7 @@
     </div>
   </footer>
 
- <script>
+  <script>
     async function loadProducts() {
       try {
         const response = await fetch('/api/products');
@@ -187,7 +187,10 @@
         
         if (Array.isArray(products) && products.length > 0) {
           products.forEach(p => {
-            const grid = document.getElementById(`grid-${p.category}`);
+            let catKey = p.category ? p.category.toLowerCase().trim() : '';
+            if (catKey === 'foods') catKey = 'food';
+            
+            const grid = document.getElementById(`grid-${catKey}`) || document.getElementById(`grid-toys`);
             if (grid) {
               const card = document.createElement('div');
               card.className = 'card';
@@ -201,7 +204,7 @@
                 </div>
                 <div class="card-footer">
                   <div class="price">৳ ${p.price}</div>
-                  <button class="add-btn" onclick="alert('অর্ডার সিস্টেম শীঘ্রই আসছে!')">+</button>
+                  <button class="add-btn" onclick="alert('পণ্যটি কার্ট করা হয়েছে!')">+</button>
                 </div>
               `;
               grid.appendChild(card);
