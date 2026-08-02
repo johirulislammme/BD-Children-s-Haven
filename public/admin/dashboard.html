@@ -6,15 +6,30 @@
   <title>BD Children's Haven — Admin Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body{margin:0;font-family:'Nunito',sans-serif;background:#fdf6ea;color:#243858;}
-    header{background:#22303f;color:#fff;padding:16px 24px;font-weight:800;font-size:20px;}
-    .container{max-width:1100px;margin:30px auto;padding:0 20px;}
+    :root {
+      --ink: #243858;
+      --denim: #2f4258;
+      --denim-dark: #22303f;
+      --cream: #fdf6ea;
+      --cream-2: #faf1de;
+      --coral: #ef6461;
+      --leaf: #5fa557;
+    }
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);}
+    header{background:var(--denim-dark);color:#fff;padding:16px 24px;font-weight:800;font-size:20px;display:flex;align-items:center;gap:10px;}
+    .container{max-width:1200px;margin:30px auto;padding:0 20px;}
     .tabs{display:flex;gap:12px;margin-bottom:24px;}
-    .tab-btn{background:#2f4258;color:#fff;border:none;padding:10px 20px;border-radius:99px;font-weight:700;cursor:pointer;}
-    .tab-btn.active{background:#ef6461;}
-    table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+    .tab-btn{background:var(--denim);color:#fff;border:none;padding:10px 20px;border-radius:99px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+    .tab-btn.active{background:var(--coral);}
+    .card-box{background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.05);border:2px solid #eee0c4;}
+    h2{margin-top:0;color:var(--denim-dark);}
+    .table-responsive{width:100%;overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;margin-top:10px;}
     th,td{padding:14px 16px;text-align:left;border-bottom:1px solid #eee0c4;font-size:14px;}
-    th{background:#faf1de;font-weight:800;color:#22303f;}
+    th{background:var(--cream-2);font-weight:800;color:var(--denim-dark);}
+    tr:hover{background:#fcf9f2;}
+    .status-badge{background:#e2f0cb;padding:6px 12px;border-radius:99px;font-weight:700;color:#385e0e;display:inline-block;font-size:12px;}
   </style>
 </head>
 <body>
@@ -23,27 +38,34 @@
 
   <div class="container">
     <div class="tabs">
-      <button class="tab-btn" onclick="location.href='products.html'">Products</button>
-      <button class="tab-btn active">Orders</button>
+      <a href="products.html" class="tab-btn">Products</a>
+      <a href="dashboard.html" class="tab-btn active">Orders</a>
     </div>
 
-    <h2>Customer Orders</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>#ID</th>
-          <th>Customer Name</th>
-          <th>Phone</th>
-          <th>Items</th>
-          <th>Total</th>
-          <th>Status</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody id="ordersTableBody">
-        <!-- অর্ডারের ডেটা জাভাস্ক্রিপ্ট দিয়ে এখানে লোড হবে -->
-      </tbody>
-    </table>
+    <div class="card-box">
+      <h2>Customer Orders List</h2>
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>#ID</th>
+              <th>Customer Name</th>
+              <th>Phone</th>
+              <th>Address</th>
+              <th>Payment</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody">
+            <!-- জাভাস্ক্রিপ্ট দিয়ে অর্ডারগুলো এখানে ডায়নামিকালি লোড হবে -->
+            <tr><td colspan="9" style="text-align:center; color:#888;">লোডিং হচ্ছে...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -54,30 +76,39 @@
         const tbody = document.getElementById('ordersTableBody');
         tbody.innerHTML = '';
 
-        if (orders.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#888;">কোনো অর্ডার পাওয়া যায়নি।</td></tr>`;
+        if (!Array.isArray(orders) || orders.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#888; padding:20px;">এখনো কোনো অর্ডার পাওয়া যায়নি।</td></tr>`;
           return;
         }
 
         orders.forEach(o => {
-          let itemsList = o.items.map(i => `${i.name} (৳${i.price})`).join(', ');
+          // আইটেমগুলোর নাম ও দাম সুন্দরভাবে ফরম্যাট করা
+          let itemsList = 'N/A';
+          if (Array.isArray(o.items) && o.items.length > 0) {
+            itemsList = o.items.map(i => `${i.name} (৳${i.price})`).join(', ');
+          }
+
           tbody.innerHTML += `
             <tr>
-              <td>#${o.id}</td>
-              <td>${o.customerName}</td>
-              <td>${o.phone}</td>
-              <td>${itemsList}</td>
-              <td>৳ ${o.total}</td>
-              <td><span style="background:#e2f0cb; padding:4px 8px; border-radius:4px; font-weight:700; color:#385e0e;">${o.status}</span></td>
-              <td>${o.date}</td>
+              <td><strong>#${o.id}</strong></td>
+              <td>${o.customerName || 'N/A'}</td>
+              <td>${o.phone || 'N/A'}</td>
+              <td>${o.address || 'N/A'}</td>
+              <td><span style="font-weight:700; color:#3e7cb1;">${o.paymentMethod || 'COD'}</span></td>
+              <td><div style="max-width:200px; word-break:break-word;">${itemsList}</div></td>
+              <td><strong>৳ ${o.total || 0}</strong></td>
+              <td><span class="status-badge">${o.status || 'Pending'}</span></td>
+              <td><small>${o.date || ''}</small></td>
             </tr>
           `;
         });
       } catch (err) {
         console.error('Error loading orders:', err);
+        document.getElementById('ordersTableBody').innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--coral);">অর্ডার লোড করতে সমস্যা হয়েছে! সার্ভার কানেকশন চেক করুন।</td></tr>`;
       }
     }
 
+    // পেজ লোড হওয়ার সাথে সাথে অর্ডার ফেচ করা
     document.addEventListener('DOMContentLoaded', loadOrders);
   </script>
 </body>
