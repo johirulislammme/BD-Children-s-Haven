@@ -210,9 +210,15 @@
         const response = await fetch('/api/products');
         allProducts = await response.json();
         
+        // গ্রিডগুলো আগে ক্লিয়ার করে নেওয়া যাতে ডুপ্লিকেট না হয়
+        ['toys', 'learning', 'dress', 'food', 'cosmetics'].forEach(c => {
+          const g = document.getElementById(`grid-${c}`);
+          if(g) g.innerHTML = '';
+        });
+
         if (Array.isArray(allProducts) && allProducts.length > 0) {
           allProducts.forEach(p => {
-            let catKey = p.category ? p.category.toLowerCase().trim() : '';
+            let catKey = p.category ? p.category.toLowerCase().trim() : 'toys';
             if (catKey === 'foods') catKey = 'food';
             
             const grid = document.getElementById(`grid-${catKey}`) || document.getElementById(`grid-toys`);
@@ -296,9 +302,9 @@
     }
 
     async function checkoutOrder() {
-      const name = document.getElementById('custName', '').value;
-      const phone = document.getElementById('custPhone', '').value;
-      const address = document.getElementById('custAddress', '').value;
+      const name = document.getElementById('custName').value;
+      const phone = document.getElementById('custPhone').value;
+      const address = document.getElementById('custAddress').value;
       const paymentMethod = document.getElementById('paymentMethod').value;
 
       if (!name || !phone || !address) {
