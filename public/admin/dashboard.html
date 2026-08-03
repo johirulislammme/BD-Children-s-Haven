@@ -33,7 +33,7 @@
     input, select{padding:10px;border:1px solid #ddd;border-radius:6px;width:100%;font-family:inherit;}
     .full-width{grid-column:1/-1;}
     .action-btn{background:var(--leaf);color:#fff;border:none;padding:10px 20px;font-weight:700;border-radius:6px;cursor:pointer;}
-    .action-btn:hover{background:var(--leaf-dark);}
+    .action-btn:hover{background:#478a41;}
     table{width:100%;border-collapse:collapse;margin-top:15px;}
     th, td{padding:10px;border-bottom:1px solid #eee;text-align:left;font-size:14px;}
     th{background:var(--cream);color:var(--denim-dark);}
@@ -115,7 +115,6 @@
   </div>
 
   <script>
-    // Tab Switching Logic
     function switchTab(tabId, btn) {
       document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
       document.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
@@ -123,14 +122,12 @@
       btn.classList.add('active');
     }
 
-    // Logout function
     function logoutAdmin() {
       if(confirm('আপনি কি লগআউট করতে চান?')) {
-        window.location.href = 'index.html'; // অথবা আপনার লগইন পেজের নাম থাকলে দিতে পারেন
+        window.location.href = 'index.html';
       }
     }
 
-    // Load Products
     async function loadAdminProducts() {
       try {
         const res = await fetch('/api/products');
@@ -159,7 +156,6 @@
       }
     }
 
-    // Add Product with Video URL support
     async function addProduct() {
       const name = document.getElementById('pName').value.trim();
       const price = document.getElementById('pPrice').value.trim();
@@ -207,7 +203,6 @@
       }
     }
 
-    // Delete Product
     async function deleteProduct(id) {
       if(!confirm('আপনি কি এই প্রোডাক্টটি ডিলিট করতে চান?')) return;
       try {
@@ -218,7 +213,6 @@
       }
     }
 
-    // Load Orders for Admin
     async function loadAdminOrders() {
       try {
         const res = await fetch('/api/orders');
@@ -257,7 +251,6 @@
       }
     }
 
-    // Update Order Status API call
     async function updateOrderStatus(orderId, newStatus) {
       try {
         await fetch(`/api/orders/${orderId}`, {
@@ -270,7 +263,6 @@
       }
     }
 
-    // Initial Load
     loadAdminProducts();
     loadAdminOrders();
   </script>
