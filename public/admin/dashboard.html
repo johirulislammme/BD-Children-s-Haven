@@ -4,114 +4,229 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BD Children's Haven — Admin Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --ink: #243858;
-      --denim: #2f4258;
-      --denim-dark: #22303f;
-      --cream: #fdf6ea;
-      --cream-2: #faf1de;
-      --coral: #ef6461;
-      --leaf: #5fa557;
+    :root{
+      --ink:#243858; --denim:#2f4258; --denim-dark:#22303f; --cream:#fdf6ea; --cream-2:#faf1de;
+      --coral:#ef6461; --coral-dark:#d6504d; --leaf:#5fa557; --leaf-dark:#478a41;
     }
     *{box-sizing:border-box;}
     body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);}
-    header{background:var(--denim-dark);color:#fff;padding:16px 24px;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:space-between;}
-    .logout-btn{background:var(--coral);color:#fff;border:none;padding:6px 14px;border-radius:6px;font-weight:700;cursor:pointer;font-size:14px;}
-    .container{max-width:1200px;margin:30px auto;padding:0 20px;}
-    .tabs{display:flex;gap:12px;margin-bottom:24px;}
-    .tab-btn{background:var(--denim);color:#fff;border:none;padding:10px 20px;border-radius:99px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;}
+    header{background:var(--denim-dark);color:#fff;padding:16px 24px;font-size:20px;font-weight:800;}
+    .wrap{max-width:1180px;margin:24px auto;padding:0 24px;}
+    .nav-tabs{display:flex;gap:12px;margin-bottom:24px;}
+    .tab-btn{background:var(--denim);color:#fff;border:none;padding:10px 20px;border-radius:99px;font-weight:700;cursor:pointer;font-size:14px;}
     .tab-btn.active{background:var(--coral);}
-    .card-box{background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.05);border:2px solid #eee0c4;}
+    
+    .panel{background:#fff;border-radius:16px;padding:24px;border:2px solid #eee0c4;box-shadow:0 4px 12px rgba(0,0,0,0.03);display:none;}
+    .panel.active{display:block;}
+    
     h2{margin-top:0;color:var(--denim-dark);}
-    .table-responsive{width:100%;overflow-x:auto;}
-    table{width:100%;border-collapse:collapse;margin-top:10px;}
-    th,td{padding:14px 16px;text-align:left;border-bottom:1px solid #eee0c4;font-size:14px;}
-    th{background:var(--cream-2);font-weight:800;color:var(--denim-dark);}
-    tr:hover{background:#fcf9f2;}
-    .status-select{padding:6px 10px;border-radius:8px;border:2px solid #eee0c4;font-weight:700;font-size:12px;background:#fff;cursor:pointer;}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:16px;}
+    .form-grid input, .form-grid select{width:100%;padding:10px;border:2px solid #eee0c4;border-radius:8px;font-family:inherit;}
+    .add-prod-btn{background:var(--leaf);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:800;cursor:pointer;}
+    .add-prod-btn:hover{background:var(--leaf-dark);}
+
+    table{width:100%;border-collapse:collapse;margin-top:16px;background:#fff;border-radius:8px;overflow:hidden;}
+    th, td{padding:12px;text-align:left;border-bottom:1px solid #eee0c4;font-size:14px;}
+    th{background:var(--cream-2);color:var(--denim-dark);font-weight:800;}
+    .badge-status{padding:4px 10px;border-radius:99px;font-size:11px;font-weight:800;}
+    .status-Pending{background:#fff2cc;color:#806000;}
+    .status-Processing{background:#dae8fc;color:#103c82;}
+    .status-Delivered{background:#d5e8d4;color:#274e13;}
+    .status-Cancelled{background:#f8cecc;color:#b85450;}
+    
+    .del-btn{background:var(--coral);color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;}
+    .del-btn:hover{background:var(--coral-dark);}
   </style>
 </head>
 <body>
 
-  <header>
-    <span>🧸 BD Children's Haven — Admin Dashboard</span>
-    <button class="logout-btn" onclick="logout()">Logout</button>
-  </header>
+  <header>🧸 BD Children's Haven — Admin Dashboard</header>
 
-  <div class="container">
-    <div class="tabs">
-      <a href="products.html" class="tab-btn">Products</a>
-      <a href="dashboard.html" class="tab-btn active">Orders</a>
+  <div class="wrap">
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('products')">Products</button>
+      <button class="tab-btn" onclick="switchTab('orders')">Orders</button>
     </div>
 
-    <div class="card-box">
-      <h2>Customer Orders List</h2>
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th>#ID</th>
-              <th>Customer Name</th>
-              <th>Phone</th>
-              <th>Address</th>
-              <th>Payment</th>
-              <th>Items</th>
-              <th>Total</th>
-              <th>Status</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="ordersTableBody">
-            <tr><td colspan="9" style="text-align:center; color:#888;">লোডিং হচ্ছে...</td></tr>
-          </tbody>
-        </table>
+    <!-- Products Panel -->
+    <div class="panel active" id="productsPanel">
+      <h2>Add New Product</h2>
+      <div class="form-grid">
+        <input type="text" id="prodName" placeholder="Product Name">
+        <input type="number" id="prodPrice" placeholder="Price (BDT)">
+        <select id="prodCategory">
+          <option value="Toys">Toys</option>
+          <option value="Learning">Learning</option>
+          <option value="Dress">Dress</option>
+          <option value="Food">Food</option>
+          <option value="Cosmetics">Cosmetics</option>
+        </select>
+        <input type="text" id="prodTag" placeholder="Tag (e.g. New, Sale)">
+        <input type="number" id="prodStock" placeholder="Stock Amount">
+        <input type="text" id="prodImage" placeholder="Image URL (optional)">
       </div>
+      <button class="add-prod-btn" onclick="addProduct()">+ Add Product</button>
+
+      <h2 style="margin-top:32px;">Existing Products List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Tag</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="adminProductsTable">
+          <tr><td colspan="6" style="text-align:center; color:#888;">লোডিং হচ্ছে...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Orders Panel -->
+    <div class="panel" id="ordersPanel">
+      <h2>Customer Orders List</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>#ID</th>
+            <th>Customer Name</th>
+            <th>Phone & Address</th>
+            <th>Payment</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="adminOrdersTable">
+          <tr><td colspan="8" style="text-align:center; color:#888;">লোডিং হচ্ছে...</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <script>
-    function logout() {
-      localStorage.removeItem('isAdminLoggedIn');
-      window.location.href = 'login.html';
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+
+      if (tab === 'products') {
+        document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+        document.getElementById('productsPanel').classList.add('active');
+        loadAdminProducts();
+      } else {
+        document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+        document.getElementById('ordersPanel').classList.add('active');
+        loadAdminOrders();
+      }
     }
 
-    async function loadOrders() {
+    async function loadAdminProducts() {
       try {
-        const response = await fetch('/api/orders');
-        const orders = await response.json();
-        const tbody = document.getElementById('ordersTableBody');
+        const res = await fetch('/api/products');
+        const products = await res.json();
+        const tbody = document.getElementById('adminProductsTable');
         tbody.innerHTML = '';
 
-        if (!Array.isArray(orders) || orders.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:#888; padding:20px;">কোনো অর্ডার পাওয়া যায়নি।</td></tr>`;
+        if (products.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888;">কোনো প্রোডাক্ট নেই!</td></tr>';
+          return;
+        }
+
+        products.forEach(p => {
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${p.name}</strong></td>
+              <td>${p.category}</td>
+              <td>৳ ${p.price}</td>
+              <td><span style="font-weight:800; color:${p.stock > 0 ? 'var(--leaf-dark)' : 'var(--coral)'};">${p.stock || 0} pcs</span></td>
+              <td>${p.tag || '-'}</td>
+              <td><button class="del-btn" onclick="deleteProduct(${p.id})">Delete</button></td>
+            </tr>
+          `;
+        });
+      } catch (err) {
+        console.error('Error loading products:', err);
+      }
+    }
+
+    async function addProduct() {
+      const name = document.getElementById('prodName').value;
+      const price = document.getElementById('prodPrice').value;
+      const category = document.getElementById('prodCategory').value;
+      const tag = document.getElementById('prodTag').value;
+      const stock = document.getElementById('prodStock').value;
+      const image = document.getElementById('prodImage').value;
+
+      if (!name || !price || !stock) {
+        alert('দয়া করে প্রোডাক্টের নাম, মূল্য এবং স্টক পরিমাণ দিন।');
+        return;
+      }
+
+      const res = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, price, category, tag, stock, image })
+      });
+
+      const result = await res.json();
+      if (result.success) {
+        alert('প্রোডাক্ট সফলভাবে যুক্ত করা হয়েছে!');
+        document.getElementById('prodName').value = '';
+        document.getElementById('prodPrice').value = '';
+        document.getElementById('prodTag').value = '';
+        document.getElementById('prodStock').value = '';
+        document.getElementById('prodImage').value = '';
+        loadAdminProducts();
+      }
+    }
+
+    async function deleteProduct(id) {
+      if (confirm('আপনি কি এই প্রোডাক্টটি ডিলিট করতে চান?')) {
+        await fetch(`/api/products/${id}`, { method: 'DELETE' });
+        loadAdminProducts();
+      }
+    }
+
+    async function loadAdminOrders() {
+      try {
+        const res = await fetch('/api/orders');
+        const orders = await res.json();
+        const tbody = document.getElementById('adminOrdersTable');
+        tbody.innerHTML = '';
+
+        if (orders.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#888;">কোনো অর্ডার পাওয়া যায়নি।</td></tr>';
           return;
         }
 
         orders.forEach(o => {
           let itemsText = o.items.map(i => `${i.name} (৳${i.price})`).join(', ');
-          
           let formattedDate = o.date;
           try {
             formattedDate = new Date(o.date).toLocaleString('en-US', {
               timeZone: 'Asia/Dhaka',
               dateStyle: 'short',
-              timeStyle: 'medium'
+              timeStyle: 'short'
             });
           } catch(e) {}
 
           tbody.innerHTML += `
             <tr>
               <td><strong>#${o.id}</strong></td>
-              <td>${o.customerName}</td>
-              <td>${o.phone}</td>
-              <td>${o.address}</td>
-              <td><span style="color:var(--denim); font-weight:700;">${o.paymentMethod}</span></td>
+              <td><strong>${o.name}</strong></td>
+              <td>${o.phone}<br><small style="color:#666;">${o.address}</small></td>
+              <td>${o.paymentMethod}</td>
               <td><small>${itemsText}</small></td>
               <td><strong>৳ ${o.total}</strong></td>
               <td>
-                <select class="status-select" onchange="updateOrderStatus('${o.id}', this.value)">
+                <select onchange="updateOrderStatus(${o.id}, this.value)" class="badge-status status-${o.status}">
                   <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
                   <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
                   <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
@@ -128,25 +243,21 @@
     }
 
     async function updateOrderStatus(orderId, newStatus) {
-      try {
-        const response = await fetch(`/api/orders/${orderId}/status`, {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status: newStatus })
-        });
-        const result = await response.json();
-        if (result.success) {
-          alert(`অর্ডার #${orderId} এর স্ট্যাটাস সফলভাবে পরিবর্তন করে "${newStatus}" করা হয়েছে!`);
-        } else {
-          alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে।');
-        }
-      } catch (err) {
-        console.error('Error updating status:', err);
-        alert('সার্ভার কানেকশনে সমস্যা হয়েছে!');
+      const res = await fetch(`/api/orders/${orderId}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const result = await res.json();
+      if (result.success) {
+        loadAdminOrders();
+      } else {
+        alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে!');
       }
     }
 
-    document.addEventListener('DOMContentLoaded', loadOrders);
+    // Initial load
+    loadAdminProducts();
   </script>
 </body>
 </html>
