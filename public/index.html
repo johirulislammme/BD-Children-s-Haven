@@ -37,24 +37,10 @@
 
     .container{max-width:1200px;margin:24px auto;padding:0 20px;}
     
-    /* Admin Section Styles */
-    .admin-box { background: #fff; border-radius: 16px; border: 2px solid #eee0c4; padding: 24px; margin-bottom: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
-    .admin-box h2 { font-family: 'Baloo 2', cursive; margin-top: 0; color: var(--denim-dark); }
-    .admin-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px; }
-    .admin-form input, .admin-form select { width: 100%; padding: 10px; border: 2px solid #eee0c4; border-radius: 8px; font-family: inherit; }
-    .admin-form .full-width { grid-column: 1 / -1; }
-    .add-prod-btn { background: var(--leaf); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 15px; }
-    .add-prod-btn:hover { background: var(--leaf-dark); }
-    
-    .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    .admin-table th, .admin-table td { padding: 10px; border-bottom: 1px solid #eee0c4; text-align: left; font-size: 14px; }
-
-    /* Categories Bar */
     .categories-bar{display:flex;gap:10px;margin-bottom:24px;overflow-x:auto;padding-bottom:5px;}
     .cat-tab{background:#fff;border:2px solid #eee0c4;padding:8px 16px;border-radius:99px;font-weight:700;cursor:pointer;color:var(--denim);}
     .cat-tab.active{background:var(--denim);color:#fff;border-color:var(--denim);}
 
-    /* Products Grid & Cards */
     .products-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));gap:20px;}
     
     .card{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:16px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
@@ -72,7 +58,6 @@
     .add-to-cart:hover{background:var(--denim-dark);}
     .add-to-cart:disabled{background:#ccc;cursor:not-allowed;}
 
-    /* Cart & Checkout Section */
     .cart-section{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:24px;margin-top:40px;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
     .cart-section h2{font-family:'Baloo 2',cursive;margin-top:0;color:var(--denim-dark);}
     .cart-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
@@ -83,7 +68,6 @@
     .place-order-btn{background:var(--leaf);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-weight:800;cursor:pointer;font-size:16px;margin-top:16px;}
     .place-order-btn:hover{background:var(--leaf-dark);}
 
-    /* Orders & Tracking Section */
     .orders-box{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:24px;margin-top:30px;}
     .track-input{display:flex;gap:10px;margin-bottom:16px;}
     .track-input input{flex:1;padding:10px;border:2px solid #eee0c4;border-radius:8px;}
@@ -108,47 +92,6 @@
   </section>
 
   <div class="container">
-
-    <!-- Admin Panel Section -->
-    <div class="admin-box">
-      <h2>Product Management (Admin)</h2>
-      <div class="admin-form">
-        <input type="text" id="newProdName" placeholder="Product Name">
-        <input type="number" id="newProdPrice" placeholder="Price (BDT)">
-        <select id="newProdCategory">
-          <option value="Toys">Toys</option>
-          <option value="Learning">Learning</option>
-          <option value="Dress">Dress</option>
-          <option value="Food">Food</option>
-          <option value="Cosmetics">Cosmetics</option>
-        </select>
-        <input type="text" id="newProdTag" placeholder="Tag (e.g. New, Sale)">
-        <input type="number" id="newProdStock" placeholder="Stock Amount">
-        <input type="text" id="newProdImage" class="full-width" placeholder="Image URL (optional)">
-        <input type="text" id="newProdVideo" class="full-width" placeholder="Video URL (YouTube or Imgur .mp4 link) (optional)">
-      </div>
-      <button class="add-prod-btn" onclick="addNewProduct()">+ Add Product</button>
-
-      <h3 style="margin-top:25px; color:var(--denim-dark);">Existing Products List</h3>
-      <div style="overflow-x:auto;">
-        <table class="admin-table">
-          <thead>
-            <tr style="background:var(--cream-2);">
-              <th>Name</th>
-              <th>Category</th>
-              <th>Price</th>
-              <th>Stock</th>
-              <th>Tag</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="adminProductsList">
-            <!-- Dynamically populated -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-
     <h2>Explore Products</h2>
     
     <div class="categories-bar" id="categoriesBar">
@@ -222,86 +165,9 @@
         const res = await fetch('/api/products');
         products = await res.json();
         renderProducts();
-        renderAdminProducts();
       } catch (err) {
         console.error('Error loading products:', err);
       }
-    }
-
-    async function addNewProduct() {
-      const name = document.getElementById('newProdName').value.trim();
-      const price = parseFloat(document.getElementById('newProdPrice').value);
-      const category = document.getElementById('newProdCategory').value;
-      const tag = document.getElementById('newProdTag').value.trim();
-      const stock = parseInt(document.getElementById('newProdStock').value) || 0;
-      const image = document.getElementById('newProdImage').value.trim();
-      const video = document.getElementById('newProdVideo').value.trim();
-
-      if (!name || isNaN(price)) {
-        alert('দয়া করে প্রোডাক্টের নাম এবং সঠিক দাম দিন।');
-        return;
-      }
-
-      const newProduct = { name, price, category, tag, stock, image, video };
-
-      try {
-        const res = await fetch('/api/products', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newProduct)
-        });
-        const result = await res.json();
-        if (result.success) {
-          alert('প্রোডাক্ট সফলভাবে যুক্ত করা হয়েছে!');
-          document.getElementById('newProdName').value = '';
-          document.getElementById('newProdPrice').value = '';
-          document.getElementById('newProdTag').value = '';
-          document.getElementById('newProdStock').value = '';
-          document.getElementById('newProdImage').value = '';
-          document.getElementById('newProdVideo').value = '';
-          loadProducts();
-        } else {
-          alert('প্রোডাক্ট যোগ করতে সমস্যা হয়েছে।');
-        }
-      } catch (err) {
-        console.error('Add product error:', err);
-      }
-    }
-
-    async function deleteProduct(id) {
-      if (!confirm('আপনি কি এই প্রোডাক্টটি মুছে ফেলতে চান?')) return;
-      try {
-        const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-        const result = await res.json();
-        if (result.success) {
-          loadProducts();
-        } else {
-          alert('প্রোডাক্ট ডিলিট করতে সমস্যা হয়েছে।');
-        }
-      } catch (err) {
-        console.error('Delete product error:', err);
-      }
-    }
-
-    function renderAdminProducts() {
-      const tbody = document.getElementById('adminProductsList');
-      tbody.innerHTML = '';
-      if (products.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888;">কোনো প্রোডাক্ট নেই।</td></tr>';
-        return;
-      }
-      products.forEach(p => {
-        tbody.innerHTML += `
-          <tr>
-            <td>${p.name}</td>
-            <td>${p.category}</td>
-            <td>৳ ${p.price}</td>
-            <td><strong style="color:var(--leaf-dark);">${p.stock || 0} pcs</strong></td>
-            <td>${p.tag || '-'}</td>
-            <td><button onclick="deleteProduct(${p.id})" style="background:var(--coral);color:#fff;border:none;padding:5px 10px;border-radius:4px;cursor:pointer;">Delete</button></td>
-          </tr>
-        `;
-      });
     }
 
     function filterCategory(category) {
