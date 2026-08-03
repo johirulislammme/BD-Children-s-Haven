@@ -176,10 +176,10 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ 
             name, 
-            price: Number(price), 
+            price:Number(price), 
             category, 
             tag, 
-            stock: Number(stock) || 0, 
+            stock:Number(stock) || 0, 
             image, 
             video 
           })
@@ -198,7 +198,7 @@
         } else {
           alert('প্রোডাক্ট যোগ করতে সমস্যা হয়েছে।');
         }
-      } catch (err) {
+      } cursor: pointer; catch (err) {
         console.error('Error adding product:', err);
       }
     }
@@ -237,7 +237,7 @@
               <td>
                 <select class="status-select" onchange="updateOrderStatus(${o.id}, this.value)">
                   <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                  <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
+                  <option value="Processing" ${o.status === 'Processing' ? 'selected`' : ''}>Processing</option>
                   <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
                   <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
                   <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
