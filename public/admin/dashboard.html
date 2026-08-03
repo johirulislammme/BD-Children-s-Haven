@@ -19,7 +19,7 @@
     input, select{padding:10px;border:1px solid #ddd;border-radius:6px;width:100%;font-family:inherit;}
     .full-width{grid-column:1/-1;}
     .action-btn{background:var(--leaf);color:#fff;border:none;padding:10px 20px;font-weight:700;border-radius:6px;cursor:pointer;}
-    .action-btn:hover{background:var(--leaf-dark);}
+    .action-btn:hover{background:#478a41;}
     table{width:100%;border-collapse:collapse;margin-top:15px;}
     th, td{padding:10px;border-bottom:1px solid #eee;text-align:left;font-size:14px;}
     th{background:var(--cream);color:var(--denim-dark);}
@@ -131,12 +131,20 @@
         const res = await fetch('/api/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, price: Number(price), category, tag, stock: Number(stock) || 0, image, video })
+          body: JSON.stringify({ 
+            name, 
+            price: Number(price), 
+            category, 
+            tag, 
+            stock: Number(stock) || 0, 
+            image, 
+            video 
+          })
         });
 
         const result = await res.json();
         if(result.success) {
-          alert('প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!');
+          alert('প্রোডাক্ট সফলভাবে ভিডিও সহ যোগ করা হয়েছে!');
           document.getElementById('pName').value = '';
           document.getElementById('pPrice').value = '';
           document.getElementById('pTag').value = '';
@@ -202,7 +210,7 @@
       }
     }
 
-    // Update Order Status API call (if backend supports it, otherwise safe)
+    // Update Order Status API call
     async function updateOrderStatus(orderId, newStatus) {
       try {
         await fetch(`/api/orders/${orderId}`, {
