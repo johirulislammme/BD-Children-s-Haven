@@ -207,7 +207,7 @@
         }
 
         orders.forEach(o => {
-          let itemsText = o.items.map(i => `${i.name} (৳${i.price})`).join(', ');
+          let itemsText = o.items.map(i => `${i.name} (${i.qty}x) [৳${i.price}]`).join(', ');
           let formattedDate = o.date;
           try {
             formattedDate = new Date(o.date).toLocaleString('en-US', {
@@ -256,7 +256,6 @@
       }
     }
 
-    // Initial load
     loadAdminProducts();
   </script>
 </body>
