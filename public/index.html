@@ -20,7 +20,6 @@
     .nav-btn{background:var(--coral);color:#fff;border:none;padding:8px 16px;border-radius:99px;font-weight:700;cursor:pointer;font-family:inherit;}
     .nav-btn:hover{background:var(--coral-dark);}
 
-    /* Centered Custom Hero Section matching reference image style */
     .hero{text-align:center;padding:45px 20px;background:var(--cream-2);border-bottom:2px solid #eee0c4;}
     .brand-title {
       font-family: 'Baloo 2', cursive;
@@ -31,35 +30,27 @@
     }
     .brand-title .b-green { color: #2e8b57; }
     .brand-title .d-blue { color: #1e90ff; }
-    .brand-title .c-green { color: #3cb371; }
     .brand-title .h-yellow { color: #e5c158; }
-    .brand-title .h-red { color: #e74c3c; }
 
-    .hero-subtitle {
-      font-size: 19px;
-      font-weight: 800;
-      color: #222;
-      margin: 0 0 6px;
-    }
-    .hero-tagline {
-      font-size: 16px;
-      font-weight: 700;
-      color: #444;
-      margin: 0;
-    }
+    .hero-subtitle { font-size: 19px; font-weight: 800; color: #222; margin: 0 0 6px; }
+    .hero-tagline { font-size: 16px; font-weight: 700; color: #444; margin: 0; }
 
     .container{max-width:1200px;margin:24px auto;padding:0 20px;}
     
-    /* Category Filter Tabs */
     .categories-bar{display:flex;gap:10px;margin-bottom:24px;overflow-x:auto;padding-bottom:5px;}
     .cat-tab{background:#fff;border:2px solid #eee0c4;padding:8px 16px;border-radius:99px;font-weight:700;cursor:pointer;color:var(--denim);}
     .cat-tab.active{background:var(--denim);color:#fff;border-color:var(--denim);}
 
-    .products-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));gap:20px;}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));gap:20px;}
     
     .card{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:16px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
-    .card-img{height:150px;background:#f0f0f0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:12px;overflow:hidden;}
+    .card-media { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .card-img{height:150px;background:#f0f0f0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:40px;overflow:hidden;}
     .card-img img{width:100%;height:100%;object-fit:cover;}
+    
+    .card-video { width: 100%; height: 130px; border-radius: 10px; overflow: hidden; background: #000; }
+    .card-video iframe, .card-video video { width: 100%; height: 100%; border: none; object-fit: cover; }
+
     .card h3{margin:0 0 6px;font-size:18px;color:var(--denim-dark);}
     .card .price{font-weight:800;color:var(--leaf-dark);font-size:16px;margin-bottom:6px;}
     .card .stock-info{font-size:13px;color:#666;margin-bottom:10px;}
@@ -67,7 +58,6 @@
     .add-to-cart:hover{background:var(--denim-dark);}
     .add-to-cart:disabled{background:#ccc;cursor:not-allowed;}
 
-    /* Cart Section */
     .cart-section{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:24px;margin-top:40px;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
     .cart-section h2{font-family:'Baloo 2',cursive;margin-top:0;color:var(--denim-dark);}
     .cart-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
@@ -78,7 +68,6 @@
     .place-order-btn{background:var(--leaf);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-weight:800;cursor:pointer;font-size:16px;margin-top:16px;}
     .place-order-btn:hover{background:var(--leaf-dark);}
 
-    /* My Orders Section */
     .orders-box{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:24px;margin-top:30px;}
     .track-input{display:flex;gap:10px;margin-bottom:16px;}
     .track-input input{flex:1;padding:10px;border:2px solid #eee0c4;border-radius:8px;}
@@ -94,7 +83,6 @@
     </div>
   </header>
 
-  <!-- Centered Custom Hero Section matching reference image style -->
   <section class="hero">
     <h1 class="brand-title">
       <span class="b-green">BD</span> <span class="d-blue">Children's</span> <span class="h-yellow">Haven</span>
@@ -106,7 +94,6 @@
   <div class="container">
     <h2>Explore Products</h2>
     
-    <!-- Category Filter Bar -->
     <div class="categories-bar" id="categoriesBar">
       <button class="cat-tab active" onclick="filterCategory('All')">All Products</button>
       <button class="cat-tab" onclick="filterCategory('Toys')">Toys</button>
@@ -116,11 +103,8 @@
       <button class="cat-tab" onclick="filterCategory('Cosmetics')">Cosmetics</button>
     </div>
 
-    <div class="products-grid" id="productsGrid">
-      <!-- Products loaded dynamically -->
-    </div>
+    <div class="products-grid" id="productsGrid"></div>
 
-    <!-- Cart & Checkout Section -->
     <div class="cart-section" id="cartSection">
       <h2>Your Shopping Cart</h2>
       <table class="cart-table">
@@ -161,7 +145,6 @@
       <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
     </div>
 
-    <!-- My Orders / Tracking Section -->
     <div class="orders-box" id="trackSection">
       <h2>Track Your Orders ("My Orders")</h2>
       <div class="track-input">
@@ -215,10 +198,33 @@
 
         let isStockOut = (p.stock || 0) <= 0;
 
+        // Video handling for both YouTube and Direct Video Links (like Imgur .mp4)
+        let videoHTML = '';
+        if (p.video) {
+          if (p.video.includes('youtube.com') || p.video.includes('youtu.be')) {
+            let videoId = '';
+            if (p.video.includes('youtu.be/')) {
+              videoId = p.video.split('youtu.be/')[1]?.split('?')[0];
+            } else if (p.video.includes('watch?v=')) {
+              videoId = p.video.split('watch?v=')[1]?.split('&')[0];
+            } else if (p.video.includes('embed/')) {
+              videoId = p.video.split('embed/')[1]?.split('?')[0];
+            }
+            let embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}` : p.video;
+            videoHTML = `<div class="card-video"><iframe src="${embedUrl}" allowfullscreen></iframe></div>`;
+          } else {
+            // Direct video link (.mp4 from Imgur or other hosting)
+            videoHTML = `<div class="card-video"><video controls src="${p.video}"></video></div>`;
+          }
+        }
+
         grid.innerHTML += `
           <div class="card">
             <div>
-              <div class="card-img">${p.image ? `<img src="${p.image}" alt="">` : emoji}</div>
+              <div class="card-media">
+                <div class="card-img">${p.image ? `<img src="${p.image}" alt="">` : emoji}</div>
+                ${videoHTML}
+              </div>
               <h3>${p.name}</h3>
               <div class="price">৳ ${p.price}</div>
               <div class="stock-info">Stock: <strong>${p.stock || 0} pcs</strong></div>
