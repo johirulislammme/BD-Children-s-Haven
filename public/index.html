@@ -21,9 +21,33 @@
     .nav-btn{background:var(--coral);color:#fff;border:none;padding:8px 16px;border-radius:99px;font-weight:700;cursor:pointer;font-family:inherit;}
     .nav-btn:hover{background:var(--coral-dark);}
 
-    /* Cover Photo / Hero Banner Section */
-    .hero{width:100%;max-height:420px;overflow:hidden;background:var(--cream-2);border-bottom:2px solid #eee0c4;display:flex;justify-content:center;align-items:center;}
-    .hero img{width:100%;height:100%;object-fit:cover;}
+    /* Centered Hero Styling similar to provided style */
+    .hero{text-align:center;padding:45px 20px;background:var(--cream-2);border-bottom:2px solid #eee0c4;}
+    .brand-title {
+      font-family: 'Baloo 2', cursive;
+      font-size: 42px;
+      font-weight: 800;
+      margin: 0 0 5px;
+      letter-spacing: 0.5px;
+    }
+    .brand-title .b-green { color: #2e8b57; }
+    .brand-title .d-blue { color: #1e90ff; }
+    .brand-title .c-green { color: #3cb371; }
+    .brand-title .h-yellow { color: #e5c158; }
+    .brand-title .h-red { color: #e74c3c; }
+
+    .hero-subtitle {
+      font-size: 19px;
+      font-weight: 800;
+      color: #222;
+      margin: 0 0 6px;
+    }
+    .hero-tagline {
+      font-size: 16px;
+      font-weight: 700;
+      color: #444;
+      margin: 0;
+    }
 
     .container{max-width:1200px;margin:24px auto;padding:0 20px;}
     
@@ -65,7 +89,6 @@
 <body>
 
   <header>
-    <!-- Teddy bear removed from logo as requested -->
     <a href="#" class="logo">BD Children's Haven</a>
     <div class="header-btns">
       <button class="nav-btn" onclick="scrollToSection('cartSection')">🛒 Cart (<span id="cartCount">0</span>)</button>
@@ -73,9 +96,13 @@
     </div>
   </header>
 
-  <!-- Cover Photo Banner Section -->
+  <!-- Centered Custom Hero Section matching reference image style -->
   <section class="hero">
-    <img src="https://i.imgur.com/your-uploaded-image-link.jpg" alt="BD Children's Haven Banner" id="coverBannerImg">
+    <h1 class="brand-title">
+      <span class="b-green">BD</span> <span class="d-blue">Children's</span> <span class="h-yellow">Haven</span>
+    </h1>
+    <div class="hero-subtitle">Toys, Learning & More | Bangladesh</div>
+    <div class="hero-tagline">Growing Minds, Creating Joy!</div>
   </section>
 
   <div class="container">
@@ -336,7 +363,7 @@
           return;
         }
 
-        let html = '<table style="width:100%; border-collapse:collapse; margin-top:12px;"><thead><tr style="background:var(--cream-2);`><th style="padding:8px;">#ID</th><th style="padding:8px;">Items</th><th style="padding:8px;">Total</th><th style="padding:8px;">Status</th><th style="padding:8px;">Date</th></tr></thead><tbody>';
+        let html = '<table style="width:100%; border-collapse:collapse; margin-top:12px;"><thead><tr style="background:var(--cream-2);"><th style="padding:8px;">#ID</th><th style="padding:8px;">Items</th><th style="padding:8px;">Total</th><th style="padding:8px;">Status</th><th style="padding:8px;">Date</th></tr></thead><tbody>';
         userOrders.forEach(o => {
           let itemsText = o.items.map(i => `${i.name} (${i.qty}x)`).join(', ');
           html += `<tr><td style="padding:8px;">#${o.id}</td><td style="padding:8px;"><small>${itemsText}</small></td><td style="padding:8px;">৳ ${o.total}</td><td style="padding:8px;"><strong style="color:var(--leaf-dark);">${o.status}</strong></td><td style="padding:8px;"><small>${new Date(o.date).toLocaleDateString()}</small></td></tr>`;
