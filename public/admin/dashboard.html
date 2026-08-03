@@ -13,13 +13,27 @@
     }
     body{font-family:'Nunito',sans-serif;background:#f4f7f6;margin:0;padding:20px;color:var(--ink);}
     .container{max-width:1100px;margin:0 auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
-    h2, h3{color:var(--denim-dark);}
-    .section-box{background:#fdfdfd;border:1px solid #eee;padding:20px;border-radius:8px;margin-bottom:30px;}
+    
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
+    h2, h3{color:var(--denim-dark); margin:0;}
+    
+    .logout-btn { background: var(--coral); color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+    .logout-btn:hover { background: #d6504d; }
+
+    /* Tabs Styling */
+    .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { background: #e2e8f0; border: none; padding: 10px 20px; font-weight: 700; border-radius: 6px; cursor: pointer; color: var(--denim-dark); }
+    .tab-btn.active { background: var(--denim); color: #fff; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .section-box{background:#fdfdfd;border:1px solid #eee;padding:20px;border-radius:8px;}
     .form-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;margin-bottom:15px;}
     input, select{padding:10px;border:1px solid #ddd;border-radius:6px;width:100%;font-family:inherit;}
     .full-width{grid-column:1/-1;}
     .action-btn{background:var(--leaf);color:#fff;border:none;padding:10px 20px;font-weight:700;border-radius:6px;cursor:pointer;}
-    .action-btn:hover{background:#478a41;}
+    .action-btn:hover{background:var(--leaf-dark);}
     table{width:100%;border-collapse:collapse;margin-top:15px;}
     th, td{padding:10px;border-bottom:1px solid #eee;text-align:left;font-size:14px;}
     th{background:var(--cream);color:var(--denim-dark);}
@@ -29,65 +43,93 @@
 </head>
 <body>
   <div class="container">
-    <h2>Admin Dashboard</h2>
-    
-    <!-- Product Management Section -->
-    <div class="section-box">
-      <h3>Product Management</h3>
-      <div class="form-grid">
-        <input type="text" id="pName" placeholder="Product Name">
-        <input type="number" id="pPrice" placeholder="Price (BDT)">
-        <select id="pCategory">
-          <option value="Toys">Toys</option>
-          <option value="Learning">Learning</option>
-          <option value="Dress">Dress</option>
-          <option value="Food">Food</option>
-          <option value="Cosmetics">Cosmetics</option>
-        </select>
-        <input type="text" id="pTag" placeholder="Tag (e.g. New, Sale)">
-        <input type="number" id="pStock" placeholder="Stock Amount">
-        <input type="text" id="pImage" class="full-width" placeholder="Image URL (optional)">
-        <input type="text" id="pVideo" class="full-width" placeholder="Video URL (YouTube or Imgur .mp4 link) (optional)">
-      </div>
-      <button class="action-btn" onclick="addProduct()">+ Add Product</button>
-
-      <h3 style="margin-top:25px;">Existing Products</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="adminProductsTable"></tbody>
-      </table>
+    <div class="admin-header">
+      <h2>Admin Dashboard</h2>
+      <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
     </div>
 
-    <!-- Order Management Section -->
-    <div class="section-box">
-      <h3>Customer Orders</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Customer Info</th>
-            <th>Items</th>
-            <th>Total</th>
-            <th>Payment</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody id="adminOrdersTable">
-          <tr><td colspan="6" style="text-align:center; color:#888;">লোড হচ্ছে...</td></tr>
-        </tbody>
-      </table>
+    <!-- Navigation Tabs -->
+    <div class="admin-tabs">
+      <button class="tab-btn active" onclick="switchTab('productsTab', this)">Product Management</button>
+      <button class="tab-btn" onclick="switchTab('ordersTab', this)">Customer Orders</button>
+    </div>
+    
+    <!-- Product Management Tab -->
+    <div id="productsTab" class="tab-content active">
+      <div class="section-box">
+        <h3>Add New Product</h3>
+        <div class="form-grid" style="margin-top: 15px;">
+          <input type="text" id="pName" placeholder="Product Name">
+          <input type="number" id="pPrice" placeholder="Price (BDT)">
+          <select id="pCategory">
+            <option value="Toys">Toys</option>
+            <option value="Learning">Learning</option>
+            <option value="Dress">Dress</option>
+            <option value="Food">Food</option>
+            <option value="Cosmetics">Cosmetics</option>
+          </select>
+          <input type="text" id="pTag" placeholder="Tag (e.g. New, Sale)">
+          <input type="number" id="pStock" placeholder="Stock Amount">
+          <input type="text" id="pImage" class="full-width" placeholder="Image URL (optional)">
+          <input type="text" id="pVideo" class="full-width" placeholder="Video URL (YouTube or Imgur .mp4 link) (optional)">
+        </div>
+        <button class="action-btn" onclick="addProduct()">+ Add Product</button>
+
+        <h3 style="margin-top:30px;">Existing Products List</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminProductsTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Customer Orders Tab -->
+    <div id="ordersTab" class="tab-content">
+      <div class="section-box">
+        <h3>Customer Orders List</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer Info</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Payment</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="adminOrdersTable">
+            <tr><td colspan="6" style="text-align:center; color:#888;">লোড হচ্ছে...</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
   <script>
+    // Tab Switching Logic
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(tb => tb.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // Logout function
+    function logoutAdmin() {
+      if(confirm('আপনি কি লগআউট করতে চান?')) {
+        window.location.href = 'index.html'; // অথবা আপনার লগইন পেজের নাম থাকলে দিতে পারেন
+      }
+    }
+
     // Load Products
     async function loadAdminProducts() {
       try {
@@ -96,6 +138,11 @@
         const tbody = document.getElementById('adminProductsTable');
         tbody.innerHTML = '';
         
+        if(products.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">কোনো প্রোডাক্ট নেই।</td></tr>';
+          return;
+        }
+
         products.forEach(p => {
           tbody.innerHTML += `
             <tr>
