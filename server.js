@@ -36,7 +36,7 @@ function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
 }
 
-// Admin Login API (আপনার সঠিক ইউজারনেম ও পাসওয়ার্ড)
+// Admin Login API
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
   if (username === 'johirul' && password === 'Js30113811') {
@@ -125,7 +125,7 @@ app.patch('/api/orders/:id/status', (req, res) => {
       order.items.forEach(orderedItem => {
         const product = db.products.find(p => p.id === orderedItem.id);
         if (product) {
-          product.stock = Math.max(0, (product.stock || 0) - 1);
+          product.stock = Math.max(0, (product.stock || 0) - orderedItem.qty);
         }
       });
     }
