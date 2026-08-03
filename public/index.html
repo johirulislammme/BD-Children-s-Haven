@@ -3,485 +3,356 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BD Children's Haven – Toys, Learning & More</title>
+  <title>BD Children's Haven</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
       --ink:#243858; --denim:#2f4258; --denim-dark:#22303f; --cream:#fdf6ea; --cream-2:#faf1de;
-      --sun:#f5c518; --sun-dark:#d9a90f; --coral:#ef6461; --coral-dark:#d6504d;
-      --sky:#3e7cb1; --sky-dark:#2f6293; --leaf:#5fa557; --leaf-dark:#478a41;
+      --coral:#ef6461; --coral-dark:#d6504d; --leaf:#5fa557; --leaf-dark:#478a41;
+      --sunflower:#f4d06f; --sky:#6ca6cd;
     }
     *{box-sizing:border-box;}
-    html{scroll-behavior:smooth;}
-    body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);-webkit-font-smoothing:antialiased;}
-    h1,h2,h3,.font-title{font-family:'Baloo 2',cursive;line-height:1.05;}
-    a{text-decoration:none;color:inherit;} ul{list-style:none;margin:0;padding:0;} img{max-width:100%;display:block;}
-    .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
-    .badge{--sz:64px;width:var(--sz);height:var(--sz);border-radius:50%;display:flex;align-items:center;justify-content:center;
-      background:var(--denim);box-shadow:0 0 0 3px #e9edf1,0 0 0 5px #b9c2ca,0 6px 14px rgba(34,48,63,0.35); font-size:calc(var(--sz) * 0.42); flex-shrink:0;}
-    header{position:sticky;top:0;z-index:50;background:rgba(253,246,234,0.92);backdrop-filter:blur(6px);border-bottom:2px solid #eee0c4;}
-    .navbar{display:flex;align-items:center;gap:16px;padding:12px 0;}
-    .brandmark{display:flex;align-items:center;gap:12px;}
-    .brandmark .badge{--sz:46px;font-size:20px;}
-    .brandmark-text{font-size:18px;font-weight:800;color:var(--sky-dark);letter-spacing:-0.5px;}
-    .brandmark-text span{color:var(--coral);}
-    .nav-links{display:flex;gap:20px;margin-left:auto;font-weight:700;font-size:14px;color:var(--denim);align-items:center;}
-    .nav-links a:hover{color:var(--coral);}
+    body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);}
     
-    .action-btns{display:flex;gap:10px;align-items:center;}
-    .my-orders-btn{background:var(--denim);color:#fff;border:none;padding:8px 14px;border-radius:99px;font-weight:700;font-size:13px;cursor:pointer;}
-    .my-orders-btn:hover{background:var(--denim-dark);}
+    header{background:var(--denim-dark);color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;}
+    .logo{font-family:'Baloo 2',cursive;font-size:26px;font-weight:800;color:var(--sunflower);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    .header-btns{display:flex;gap:10px;}
+    .nav-btn{background:var(--coral);color:#fff;border:none;padding:8px 16px;border-radius:99px;font-weight:700;cursor:pointer;font-family:inherit;}
+    .nav-btn:hover{background:var(--coral-dark);}
 
-    .cart-btn{position:relative;background:#fff;border:2px solid #eee0c4;padding:8px 14px;border-radius:99px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 2px 0 #eee0c4;cursor:pointer;}
-    .cart-count{background:var(--coral);color:#fff;font-size:11px;padding:2px 7px;border-radius:99px;position:absolute;top:-6px;right:-6px;border:2px solid #fff;}
+    .hero{text-align:center;padding:40px 20px;background:var(--cream-2);border-bottom:2px solid #eee0c4;}
+    .hero h1{font-family:'Baloo 2',cursive;font-size:38px;color:var(--denim-dark);margin:0 0 10px;}
+    .hero p{font-size:18px;color:#666;margin:0;}
 
-    .hero{padding:48px 0 24px;text-align:center;}
-    .hero h1{font-size: clamp(32px, 5vw, 54px);color:var(--denim-dark);margin:0 0 12px;}
-    .hero h1 span.blue{color:var(--sky);}
-    .hero h1 span.coral{color:var(--coral);}
-    .hero p{font-size:18px;color:#5a6b82;max-width:540px;margin:0 auto 28px;font-weight:600;}
+    .container{max-width:1200px;margin:24px auto;padding:0 20px;}
     
-    .cat-pills{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-bottom:32px;}
-    .cat-pill{display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:800;font-size:13px;color:var(--denim);cursor:pointer;}
-    .cat-pill .badge{--sz:52px;font-size:22px;transition:transform 0.2s;}
-    .cat-pill:hover .badge{transform:scale(1.1);}
+    /* Category Filter Tabs */
+    .categories-bar{display:flex;gap:10px;margin-bottom:24px;overflow-x:auto;padding-bottom:5px;}
+    .cat-tab{background:#fff;border:2px solid #eee0c4;padding:8px 16px;border-radius:99px;font-weight:700;cursor:pointer;color:var(--denim);}
+    .cat-tab.active{background:var(--denim);color:#fff;border-color:var(--denim);}
 
-    .trust-bar{background:var(--denim-dark);color:#fff;padding:12px 0;font-weight:700;font-size:13px;border-radius:8px;}
-    .trust-grid{display:flex;justify-content:space-around;flex-wrap:wrap;gap:12px;text-align:center;}
+    .products-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(240px, 1fr));gap:20px;}
+    
+    .card{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:16px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
+    .card-img{height:150px;background:#f0f0f0;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:40px;margin-bottom:12px;overflow:hidden;}
+    .card-img img{width:100%;height:100%;object-fit:cover;}
+    .card h3{margin:0 0 6px;font-size:18px;color:var(--denim-dark);}
+    .card .price{font-weight:800;color:var(--leaf-dark);font-size:16px;margin-bottom:6px;}
+    .card .stock-info{font-size:13px;color:#666;margin-bottom:10px;}
+    .add-to-cart{background:var(--denim);color:#fff;border:none;padding:10px;border-radius:8px;font-weight:700;cursor:pointer;width:100%;}
+    .add-to-cart:hover{background:var(--denim-dark);}
+    .add-to-cart:disabled{background:#ccc;cursor:not-allowed;}
 
-    .sec-head{display:flex;align-items:center;gap:12px;margin:40px 0 20px;}
-    .sec-head .badge{--sz:42px;font-size:20px;}
-    .sec-head h2{margin:0;font-size:26px;color:var(--denim-dark);}
-    .sec-head p{margin:0;font-size:13px;color:#6b7c93;font-weight:600;}
+    /* Cart Section */
+    .cart-section{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:24px;margin-top:40px;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
+    .cart-section h2{font-family:'Baloo 2',cursive;margin-top:0;color:var(--denim-dark);}
+    .cart-table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+    .cart-table th, .cart-table td{padding:10px;border-bottom:1px solid #eee0c4;text-align:left;}
+    
+    .checkout-form{display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;margin-top:20px;}
+    .checkout-form input, .checkout-form select{width:100%;padding:10px;border:2px solid #eee0c4;border-radius:8px;font-family:inherit;}
+    .place-order-btn{background:var(--leaf);color:#fff;border:none;padding:12px 24px;border-radius:8px;font-weight:800;cursor:pointer;font-size:16px;margin-top:16px;}
+    .place-order-btn:hover{background:var(--leaf-dark);}
 
-    .prod-grid{display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:20px;}
-    .card{background:#fff;border-radius:16px;padding:16px;border:2px solid #eee0c4;box-shadow:0 4px 12px rgba(0,0,0,0.03);position:relative;display:flex;flex-direction:column;justify-content:space-between;}
-    .card-img{height:140px;background:var(--cream);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:12px;position:relative;overflow:hidden;}
-    .card-img img{width:100%;height:100%;object-fit:cover;border-radius:12px;}
-    .tag{position:absolute;top:8px;left:8px;background:var(--coral);color:#fff;font-size:10px;font-weight:800;padding:3px 8px;border-radius:99px;text-transform:uppercase;z-index:2;}
-    .card h3{margin:0 0 8px;font-size:16px;color:var(--denim-dark);}
-    .card-footer{display:flex;align-items:center;justify-content:space-between;margin-top:12px;}
-    .price{font-weight:800;font-size:16px;color:var(--denim-dark);}
-    .add-btn{background:var(--coral);color:#fff;border:none;width:32px;height:32px;border-radius:50%;font-size:18px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 0 var(--coral-dark);}
-    .add-btn:hover{background:var(--coral-dark);}
-
-    /* Modal styles */
-    .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(36,56,88,0.5);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:100;}
-    .modal{background:#fff;width:100%;max-width:480px;border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,0.15);position:relative;max-height: 90vh; overflow-y: auto;}
-    .modal h2{margin-top:0;color:var(--denim-dark);}
-    .cart-item{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #eee0c4;}
-    .close-btn{background:none;border:none;font-size:20px;cursor:pointer;position:absolute;top:16px;right:16px;}
-    .checkout-form input, .checkout-form select{width:100%;padding:10px;margin:6px 0;border:2px solid #eee0c4;border-radius:8px;font-family:inherit;background:#fff;}
-    .checkout-form label{font-weight:700;font-size:13px;color:var(--denim-dark);display:block;margin-top:6px;}
-    .payment-info{background:var(--cream-2);padding:10px;border-radius:8px;font-size:12px;margin:8px 0;color:var(--denim-dark);border:1px dashed #eee0c4;display:none;line-height: 1.5;}
-    .checkout-btn{width:100%;background:var(--leaf);color:#fff;border:none;padding:12px;border-radius:8px;font-weight:800;font-size:16px;cursor:pointer;margin-top:12px;}
-    .checkout-btn:hover{background:var(--leaf-dark);}
-
-    footer{margin-top:60px;background:var(--denim-dark);color:#a0aec0;padding:40px 0 20px;font-size:14px;text-align:center;}
+    /* My Orders Section */
+    .orders-box{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:24px;margin-top:30px;}
+    .track-input{display:flex;gap:10px;margin-bottom:16px;}
+    .track-input input{flex:1;padding:10px;border:2px solid #eee0c4;border-radius:8px;}
+    .track-input button{background:var(--sky);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:700;cursor:pointer;}
   </style>
 </head>
 <body>
 
   <header>
-    <div class="wrap navbar">
-      <div class="brandmark">
-        <div class="badge">🧸</div>
-        <div class="brandmark-text">BD <span>Children's</span> Haven</div>
-      </div>
-      <div class="nav-links">
-        <a href="#toys">Toys</a>
-        <a href="#learning">Learning</a>
-        <a href="#dress">Dress</a>
-        <a href="#food">Food</a>
-        <a href="#cosmetics">Cosmetics</a>
-      </div>
-      <div class="action-btns">
-        <button class="my-orders-btn" onclick="openMyOrdersModal()">📦 My Orders</button>
-        <button class="cart-btn" onclick="openCart()">
-          🛒 <span class="cart-count">0</span>
-        </button>
-      </div>
+    <a href="#" class="logo">🧸 BD Children's Haven</a>
+    <div class="header-btns">
+      <button class="nav-btn" onclick="scrollToSection('cartSection')">🛒 Cart (<span id="cartCount">0</span>)</button>
+      <button class="nav-btn" style="background:var(--sunflower);color:var(--ink);" onclick="scrollToSection('trackSection')">📦 My Orders</button>
+      <a href="/admin/index.html" class="nav-btn" style="background:var(--denim);">Admin</a>
     </div>
   </header>
 
   <section class="hero">
-    <div class="wrap">
-      <h1>Growing <span class="blue">minds</span>, creating<br><span class="coral">joy</span> for every little one.</h1>
-      <p>Toys, learning kits, dress, snacks & baby cosmetics — handpicked, safe, and delivered across Bangladesh.</p>
-      
-      <div class="cat-pills">
-        <a href="#toys" class="cat-pill"><div class="badge">🧸</div>Toys</a>
-        <a href="#learning" class="cat-pill"><div class="badge">🔬</div>Learning</a>
-        <a href="#dress" class="cat-pill"><div class="badge">👗</div>Dress</a>
-        <a href="#food" class="cat-pill"><div class="badge">🍪</div>Food</a>
-        <a href="#cosmetics" class="cat-pill"><div class="badge">🧴</div>Cosmetics</a>
-      </div>
-
-      <div class="trust-bar">
-        <div class="trust-grid">
-          <span>🚚 ডেলিভারি চার্জ: ঢাকা ভিতর ৭০৳, বাইরে ১০০৳</span>
-          <span>🛡️ Safe & tested materials</span>
-          <span>🔄 7-day easy returns</span>
-          <span>💳 bKash · Nagad · Bank · COD</span>
-        </div>
-      </div>
-    </div>
+    <h1>Welcome to BD Children's Haven</h1>
+    <p>Best toys, learning materials, dresses, food & cosmetics for your kids!</p>
   </section>
 
-  <main class="wrap">
-    <section id="toys">
-      <div class="sec-head"><div class="badge">🧸</div><div><h2>Toys & Games</h2><p>Building blocks, cars, puzzles & plushies.</p></div></div>
-      <div class="prod-grid" id="grid-toys"></div>
-    </section>
+  <div class="container">
+    <h2>Explore Products</h2>
+    
+    <!-- Category Filter Bar -->
+    <div class="categories-bar" id="categoriesBar">
+      <button class="cat-tab active" onclick="filterCategory('All')">All Products</button>
+      <button class="cat-tab" onclick="filterCategory('Toys')">Toys</button>
+      <button class="cat-tab" onclick="filterCategory('Learning')">Learning</button>
+      <button class="cat-tab" onclick="filterCategory('Dress')">Dress</button>
+      <button class="cat-tab" onclick="filterCategory('Food')">Food</button>
+      <button class="cat-tab" onclick="filterCategory('Cosmetics')">Cosmetics</button>
+    </div>
 
-    <section id="learning">
-      <div class="sec-head"><div class="badge">🔬</div><div><h2>Learning Kits</h2><p>Educational tools, books & STEM toys.</p></div></div>
-      <div class="prod-grid" id="grid-learning"></div>
-    </section>
+    <div class="products-grid" id="productsGrid">
+      <!-- Products loaded dynamically -->
+    </div>
 
-    <section id="dress">
-      <div class="sec-head"><div class="badge">👗</div><div><h2>Kids Dress</h2><p>Comfortable & stylish clothing for children.</p></div></div>
-      <div class="prod-grid" id="grid-dress"></div>
-    </section>
-
-    <section id="food">
-      <div class="sec-head"><div class="badge">🍪</div><div><h2>Healthy Foods</h2><p>Organic snacks, cereals & baby food.</p></div></div>
-      <div class="prod-grid" id="grid-food"></div>
-    </section>
-
-    <section id="cosmetics">
-      <div class="sec-head"><div class="badge">🧴</div><div><h2>Baby Cosmetics</h2><p>Gentle lotion, shampoo & skincare products.</p></div></div>
-      <div class="prod-grid" id="grid-cosmetics"></div>
-    </section>
-  </main>
-
-  <!-- Cart Modal -->
-  <div class="modal-overlay" id="cartModal">
-    <div class="modal">
-      <button class="close-btn" onclick="closeCart()">×</button>
+    <!-- Cart & Checkout Section -->
+    <div class="cart-section" id="cartSection">
       <h2>Your Shopping Cart</h2>
-      <div id="cartItemsList" style="max-height: 130px; overflow-y: auto; margin-bottom: 10px;"></div>
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="cartTableBody">
+          <tr><td colspan="5" style="text-align:center; color:#888;">কার্ট খালি আছে!</td></tr>
+        </tbody>
+      </table>
       
-      <!-- বিল সামারি -->
-      <div style="background:var(--cream-2); padding: 12px; border-radius: 10px; margin-bottom: 12px; font-size: 14px; border: 1px solid #eee0c4;">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-          <span>Subtotal:</span>
-          <span id="cartSubtotal">৳ 0</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-          <span>Delivery Charge:</span>
-          <span id="deliveryChargeText">৳ 0</span>
-        </div>
-        <hr style="border:0; border-top:1px solid #d9ccb3; margin: 6px 0;">
-        <div style="font-weight: 800; font-size: 17px; display: flex; justify-content: space-between; color: var(--denim-dark);">
-          <span>Final Total:</span>
-          <span id="cartTotalPrice">৳ 0</span>
-        </div>
+      <div style="text-align:right; font-size:18px; font-weight:800;" id="cartTotalSummary">
+        Subtotal: ৳ 0 | Delivery Charge: ৳ 0 | Final Total: ৳ 0
       </div>
 
+      <h3 style="margin-top:24px; color:var(--denim-dark);">Checkout Information</h3>
       <div class="checkout-form">
         <input type="text" id="custName" placeholder="Full Name">
         <input type="text" id="custPhone" placeholder="Phone Number">
-        
-        <label for="deliveryArea">Delivery Location:</label>
-        <select id="deliveryArea" onchange="updateTotalCalculation()">
-          <option value="inside">ঢাকার ভিতর (৭০ টাকা)</option>
-          <option value="outside">ঢাকার বাইরে (১০০ টাকা)</option>
+        <input type="text" id="custAddress" placeholder="Detailed Address">
+        <select id="deliveryLocation" onchange="updateCartTotal()">
+          <option value="inside">ঢাকার ভিতর (৳ 70)</option>
+          <option value="outside">ঢাকার বাইরে (৳ 100)</option>
         </select>
-
-        <input type="text" id="custAddress" placeholder="Full Delivery Address (Area, Road, House)">
-        
-        <label for="paymentMethod">Select Payment Method:</label>
-        <select id="paymentMethod" onchange="togglePaymentInfo()">
-          <option value="COD">Cash on Delivery (COD)</option>
+        <select id="paymentMethod">
+          <option value="Cash on Delivery">Cash on Delivery (COD)</option>
           <option value="bKash">bKash</option>
           <option value="Nagad">Nagad</option>
-          <option value="Bank">Bank Transfer (BRAC Bank)</option>
+          <option value="Bank Transfer">Bank Transfer</option>
         </select>
-
-        <div id="codInfo" class="payment-info" style="display:block;">
-          <strong>Cash on Delivery (COD):</strong> ডেলিভারি চার্জ (ঢাকার ভিতর ৭০৳ / বাইরে ১০০৳) অগ্রিম (বিকাশ, নগদ বা ব্যাংকের মাধ্যমে) পরিশোধ করতে হবে।
-        </div>
-        <div id="bkashInfo" class="payment-info">
-          <strong>bKash Personal:</strong> 01976078375<br>টাকা পাঠিয়ে ট্রানজেকশন আইডি (TrxID) নোট করুন।
-        </div>
-        <div id="nagadInfo" class="payment-info">
-          <strong>Nagad Personal:</strong> 01976078375<br>টাকা পাঠিয়ে ট্রানজেকশন আইডি (TrxID) নোট করুন।
-        </div>
-        <div id="bankInfo" class="payment-info">
-          <strong>BRAC Bank PLC (Dhanmondi Branch)</strong><br>
-          Account Name: MD. JOHIRUL ISLAM<br>
-          Account Number: 1054605060002<br>
-          Routing Number: 060261205<br>
-          SWIFT Code: BRAKBDDH
-        </div>
-
-        <button class="checkout-btn" onclick="checkoutOrder()">Confirm Order</button>
       </div>
+      <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
+    </div>
+
+    <!-- My Orders / Tracking Section -->
+    <div class="orders-box" id="trackSection">
+      <h2>Track Your Orders ("My Orders")</h2>
+      <div class="track-input">
+        <input type="text" id="trackPhone" placeholder="Enter your phone number...">
+        <button onclick="trackOrders()">Search Orders</button>
+      </div>
+      <div id="trackResult"></div>
     </div>
   </div>
-
-  <!-- My Orders Modal -->
-  <div class="modal-overlay" id="myOrdersModal">
-    <div class="modal" style="max-width: 600px;">
-      <button class="close-btn" onclick="closeMyOrdersModal()">×</button>
-      <h2>Track Your Orders</h2>
-      <p style="font-size: 13px; color: #666; margin-top:0;">আপনার দেওয়া ফোন নম্বর দিয়ে পূর্বে করা অর্ডারগুলোর তালিকা ও স্ট্যাটাস দেখতে পারেন।</p>
-      
-      <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-        <input type="text" id="searchPhoneInput" placeholder="Enter your phone number (e.g. 019...)" style="flex:1; padding: 10px; border: 2px solid #eee0c4; border-radius: 8px;">
-        <button onclick="searchCustomerOrders()" style="background:var(--denim); color:#fff; border:none; padding: 0 16px; border-radius: 8px; font-weight:700; cursor:pointer;">Search</button>
-      </div>
-
-      <div id="customerOrdersResult" style="max-height: 350px; overflow-y: auto;">
-        <p style="text-align: center; color: #888; padding: 20px;">ফোন নম্বর লিখে সার্চ করুন।</p>
-      </div>
-    </div>
-  </div>
-
-  <footer>
-    <div class="wrap">
-      <p>&copy; 2026 BD Children's Haven. All rights reserved.</p>
-    </div>
-  </footer>
 
   <script>
     let cart = [];
-    let allProducts = [];
+    let products = [];
+    let currentCategory = 'All';
 
     async function loadProducts() {
       try {
-        const response = await fetch('/api/products');
-        allProducts = await response.json();
-        
-        ['toys', 'learning', 'dress', 'food', 'cosmetics'].forEach(c => {
-          const g = document.getElementById(`grid-${c}`);
-          if(g) g.innerHTML = '';
-        });
-
-        if (Array.isArray(allProducts) && allProducts.length > 0) {
-          allProducts.forEach(p => {
-            let catKey = p.category ? p.category.toLowerCase().trim() : 'toys';
-            if (catKey === 'foods') catKey = 'food';
-            
-            const grid = document.getElementById(`grid-${catKey}`) || document.getElementById(`grid-toys`);
-            if (grid) {
-              const card = document.createElement('div');
-              card.className = 'card';
-              
-              let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}">` : (p.emoji || '🎁');
-
-              card.innerHTML = `
-                <div>
-                  <div class="card-img">
-                    <span class="tag">${p.tag || 'New'}</span>
-                    ${imgHtml}
-                  </div>
-                  <h3>${p.name}</h3>
-                </div>
-                <div class="card-footer">
-                  <div class="price">৳ ${p.price}</div>
-                  <button class="add-btn" onclick="addToCart(${p.id})">+</button>
-                </div>
-              `;
-              grid.appendChild(card);
-            }
-          });
-        }
+        const res = await fetch('/api/products');
+        products = await res.json();
+        renderProducts();
       } catch (err) {
-        console.error('Error fetching products:', err);
+        console.error('Error loading products:', err);
       }
     }
 
-    function addToCart(id) {
-      const product = allProducts.find(p => p.id === id);
-      if (product) {
-        cart.push(product);
-        updateCartCount();
-        alert(product.name + ' কার্টে যোগ করা হয়েছে!');
+    function filterCategory(category) {
+      currentCategory = category;
+      document.querySelectorAll('.cat-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.includes(category) || (category === 'All' && btn.innerText.includes('All')));
+      });
+      renderProducts();
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      grid.innerHTML = '';
+
+      const filtered = currentCategory === 'All' ? products : products.filter(p => p.category === currentCategory);
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p style="grid-column:1/-1; text-align:center; color:#888;">এই ক্যাটাগরিতে কোনো প্রোডাক্ট নেই।</p>';
+        return;
       }
-    }
 
-    function updateCartCount() {
-      document.querySelector('.cart-count').innerText = cart.length;
-    }
+      filtered.forEach(p => {
+        let emoji = '🧸';
+        if(p.category === 'Learning') emoji = '🌍';
+        if(p.category === 'Dress') emoji = '👗';
+        if(p.category === 'Food') emoji = '🍯';
+        if(p.category === 'Cosmetics') emoji = '🧴';
 
-    function openCart() {
-      const list = document.getElementById('cartItemsList');
-      list.innerHTML = '';
+        let isStockOut = (p.stock || 0) <= 0;
 
-      if (cart.length === 0) {
-        list.innerHTML = '<p style="text-align:center; color:#888;">কার্ট খালি আছে!</p>';
-      } else {
-        cart.forEach((item, index) => {
-          list.innerHTML += `
-            <div class="cart-item">
-              <div><strong>${item.name}</strong><br><small>৳ ${item.price}</small></div>
-              <button onclick="removeFromCart(${index})" style="background:var(--coral); color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Remove</button>
+        grid.innerHTML += `
+          <div class="card">
+            <div>
+              <div class="card-img">${p.image ? `<img src="${p.image}" alt="">` : emoji}</div>
+              <h3>${p.name}</h3>
+              <div class="price">৳ ${p.price}</div>
+              <div class="stock-info">Stock: <strong>${p.stock || 0} pcs</strong></div>
             </div>
-          `;
-        });
-      }
-      updateTotalCalculation();
-      document.getElementById('cartModal').style.display = 'flex';
-      togglePaymentInfo();
+            <button class="add-to-cart" ${isStockOut ? 'disabled' : ''} onclick="addToCart(${p.id})">
+              ${isStockOut ? 'Stock Out' : 'Add to Cart'}
+            </button>
+          </div>
+        `;
+      });
     }
 
-    function updateTotalCalculation() {
-      let subtotal = cart.reduce((sum, item) => sum + item.price, 0);
-      let area = document.getElementById('deliveryArea').value;
-      let deliveryFee = (area === 'inside') ? 70 : 100;
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      if(!product || product.stock <= 0) return;
+      
+      const existing = cart.find(item => item.id === productId);
+      const currentQtyInCart = existing ? existing.qty : 0;
 
-      if (cart.length === 0) {
-        deliveryFee = 0;
+      if (currentQtyInCart + 1 > product.stock) {
+        alert('দুঃখিত, স্টকে পর্যাপ্ত পণ্য নেই!');
+        return;
       }
 
-      let finalTotal = subtotal + deliveryFee;
-
-      document.getElementById('cartSubtotal').innerText = '৳ ' + subtotal;
-      document.getElementById('deliveryChargeText').innerText = '৳ ' + deliveryFee;
-      document.getElementById('cartTotalPrice').innerText = '৳ ' + finalTotal;
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+      updateCartUI();
     }
 
-    function closeCart() {
-      document.getElementById('cartModal').style.display = 'none';
+    function updateCartUI() {
+      const tbody = document.getElementById('cartTableBody');
+      tbody.innerHTML = '';
+      let subtotal = 0;
+      let totalCount = 0;
+
+      if(cart.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#888;">কার্ট খালি আছে!</td></tr>';
+        document.getElementById('cartTotalSummary').innerText = 'Subtotal: ৳ 0 | Delivery Charge: ৳ 0 | Final Total: ৳ 0';
+        document.getElementById('cartCount').innerText = '0';
+        return;
+      }
+
+      cart.forEach((item, index) => {
+        let itemTotal = item.price * item.qty;
+        subtotal += itemTotal;
+        totalCount += item.qty;
+
+        tbody.innerHTML += `
+          <tr>
+            <td>${item.name}</td>
+            <td>৳ ${item.price}</td>
+            <td>${item.qty}</td>
+            <td>৳ ${itemTotal}</td>
+            <td><button onclick="removeFromCart(${index})" style="background:var(--coral);color:#fff;border:none;padding:4px 8px;border-radius:4px;cursor:pointer;">X</button></td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('cartCount').innerText = totalCount;
+      updateCartTotal();
+    }
+
+    function updateCartTotal() {
+      let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      let location = document.getElementById('deliveryLocation').value;
+      let deliveryCharge = location === 'inside' ? 70 : 100;
+      let finalTotal = subtotal + (cart.length > 0 ? deliveryCharge : 0);
+
+      document.getElementById('cartTotalSummary').innerText = `Subtotal: ৳ ${subtotal} | Delivery Charge: ৳ ${cart.length > 0 ? deliveryCharge : 0} | Final Total: ৳ ${finalTotal}`;
     }
 
     function removeFromCart(index) {
       cart.splice(index, 1);
-      updateCartCount();
-      openCart();
+      updateCartUI();
     }
 
-    function togglePaymentInfo() {
-      const method = document.getElementById('paymentMethod').value;
-      document.getElementById('codInfo').style.display = (method === 'COD') ? 'block' : 'none';
-      document.getElementById('bkashInfo').style.display = (method === 'bKash') ? 'block' : 'none';
-      document.getElementById('nagadInfo').style.display = (method === 'Nagad') ? 'block' : 'none';
-      document.getElementById('bankInfo').style.display = (method === 'Bank') ? 'block' : 'none';
-    }
-
-    async function checkoutOrder() {
-      const name = document.getElementById('custName').value;
-      const phone = document.getElementById('custPhone').value;
-      const area = document.getElementById('deliveryArea').value;
-      const addressText = document.getElementById('custAddress').value;
+    async function placeOrder() {
+      const name = document.getElementById('custName').value.trim();
+      const phone = document.getElementById('custPhone').value.trim();
+      const address = document.getElementById('custAddress').value.trim();
       const paymentMethod = document.getElementById('paymentMethod').value;
 
-      if (!name || !phone || !addressText) {
-        alert('দয়া করে আপনার নাম, ফোন নম্বর এবং সম্পূর্ণ ঠিকানা দিন।');
+      if(!name || !phone || !address) {
+        alert('দয়া করে নাম, ফোন নম্বর এবং সম্পূর্ণ ঠিকানা দিন।');
         return;
       }
-
-      if (cart.length === 0) {
+      if(cart.length === 0) {
         alert('আপনার কার্ট খালি!');
         return;
       }
 
-      let subtotal = cart.reduce((sum, item) => sum + item.price, 0);
-      let deliveryFee = (area === 'inside') ? 70 : 100;
-      let total = subtotal + deliveryFee;
-      let fullAddress = `${addressText} (${area === 'inside' ? 'ঢাকার ভিতর' : 'ঢাকার বাইরে'})`;
+      let subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      let deliveryCharge = document.getElementById('deliveryLocation').value === 'inside' ? 70 : 100;
+      let total = subtotal + deliveryCharge;
 
-      const orderData = {
-        name,
-        phone,
-        address: fullAddress,
-        paymentMethod,
-        items: cart,
-        total
-      };
+      const orderData = { name, phone, address, paymentMethod, items: cart, total };
 
       try {
-        const response = await fetch('/api/orders', {
+        const res = await fetch('/api/orders', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(orderData)
         });
+        const result = await res.json();
 
-        const result = await response.json();
-        if (result.success) {
-          alert('ধন্যবাদ ' + name + '! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। ফাইনাল বিল: ৳' + total + ' (অর্ডার আইডি: #' + result.order.id + ')');
+        if(result.success) {
+          alert('অর্ডার সফলভাবে প্লেস করা হয়েছে!');
           cart = [];
-          updateCartCount();
-          closeCart();
+          updateCartUI();
+          document.getElementById('custName').value = '';
+          document.getElementById('custPhone').value = '';
+          document.getElementById('custAddress').value = '';
+          loadProducts();
         } else {
-          alert('অর্ডার সাবমিট করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+          alert('অর্ডার করতে সমস্যা হয়েছে।');
         }
-      } catch (err) {
+      } catch(err) {
         console.error('Order error:', err);
-        alert('সার্ভার কানেকশনে সমস্যা হয়েছে!');
       }
     }
 
-    // My Orders Functions
-    function openMyOrdersModal() {
-      document.getElementById('myOrdersModal').style.display = 'flex';
-    }
-
-    function closeMyOrdersModal() {
-      document.getElementById('myOrdersModal').style.display = 'none';
-    }
-
-    async function searchCustomerOrders() {
-      const phone = document.getElementById('searchPhoneInput').value.trim();
-      const resultDiv = document.getElementById('customerOrdersResult');
-
-      if (!phone) {
-        alert('দয়া করে আপনার ফোন নম্বর লিখুন।');
+    async function trackOrders() {
+      const phone = document.getElementById('trackPhone').value.trim();
+      const resultDiv = document.getElementById('trackResult');
+      if(!phone) {
+        alert('দয়া করে ফোন নম্বর দিন।');
         return;
       }
 
-      resultDiv.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">অর্ডার খোঁজা হচ্ছে...</p>';
-
       try {
-        const response = await fetch('/api/orders');
-        const orders = await response.json();
+        const res = await fetch('/api/orders');
+        const orders = await res.json();
+        const userOrders = orders.filter(o => o.phone === phone);
 
-        const myOrders = orders.filter(o => o.phone === phone);
-
-        if (myOrders.length === 0) {
-          resultDiv.innerHTML = '<p style="text-align: center; color: var(--coral); padding: 20px;">এই ফোন নম্বর দিয়ে কোনো অর্ডার পাওয়া যায়নি!</p>';
+        if(userOrders.length === 0) {
+          resultDiv.innerHTML = '<p style="color:var(--coral); font-weight:700; margin-top:10px;">এই নম্বরে কোনো অর্ডার পাওয়া যায়নি।</p>';
           return;
         }
 
-        resultDiv.innerHTML = '';
-        myOrders.forEach(o => {
-          let itemsText = o.items.map(i => `${i.name} (৳${i.price})`).join(', ');
-          let formattedDate = o.date;
-          try {
-            formattedDate = new Date(o.date).toLocaleString('en-US', {
-              timeZone: 'Asia/Dhaka',
-              dateStyle: 'short',
-              timeStyle: 'medium'
-            });
-          } catch(e) {}
-
-          resultDiv.innerHTML += `
-            <div style="background:var(--cream-2); border:1px solid #eee0c4; border-radius:12px; padding:14px; margin-bottom:12px;">
-              <div style="display:flex; justify-content:space-between; font-weight:800; color:var(--denim-dark); margin-bottom:6px;">
-                <span>Order #${o.id}</span>
-                <span style="background:#e2f0d9; color:#385723; padding:2px 8px; border-radius:99px; font-size:11px;">${o.status}</span>
-              </div>
-              <div style="font-size:13px; color:#555; margin-bottom:6px;">
-                <strong>Items:</strong> ${itemsText}
-              </div>
-              <div style="display:flex; justify-content:space-between; font-size:13px; font-weight:700; color:var(--ink);">
-                <span>Final Total: ৳ ${o.total} (${o.paymentMethod})</span>
-                <span style="color:#777; font-size:11px;">${formattedDate}</span>
-              </div>
-            </div>
-          `;
+        let html = '<table style="width:100%; border-collapse:collapse; margin-top:12px;"><thead><tr style="background:var(--cream-2);"><th style="padding:8px;">#ID</th><th style="padding:8px;">Items</th><th style="padding:8px;">Total</th><th style="padding:8px;">Status</th><th style="padding:8px;">Date</th></tr></thead><tbody>';
+        userOrders.forEach(o => {
+          let itemsText = o.items.map(i => `${i.name} (${i.qty}x)`).join(', ');
+          html += `<tr><td style="padding:8px;">#${o.id}</td><td style="padding:8px;"><small>${itemsText}</small></td><td style="padding:8px;">৳ ${o.total}</td><td style="padding:8px;"><strong style="color:var(--leaf-dark);">${o.status}</strong></td><td style="padding:8px;"><small>${new Date(o.date).toLocaleDateString()}</small></td></tr>`;
         });
-
-      } catch (err) {
-        console.error('Error fetching orders:', err);
-        resultDiv.innerHTML = '<p style="text-align: center; color: var(--coral); padding: 20px;">ডেটা লোড করতে সমস্যা হয়েছে।</p>';
+        html += '</tbody></table>';
+        resultDiv.innerHTML = html;
+      } catch(err) {
+        console.error('Tracking error:', err);
       }
     }
 
-    document.addEventListener('DOMContentLoaded', loadProducts);
+    function scrollToSection(id) {
+      document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+
+    loadProducts();
   </script>
 </body>
 </html>
