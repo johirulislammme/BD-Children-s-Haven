@@ -15,13 +15,12 @@
     *{box-sizing:border-box;}
     body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);}
     
-    header{background:var(--denim-dark);color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;}
-    .logo{font-family:'Baloo 2',cursive;font-size:26px;font-weight:800;color:var(--sunflower);text-decoration:none;display:flex;align-items:center;gap:10px;}
+    header{background:var(--denim-dark);color:#fff;padding:16px 24px;display:flex;justify-content:flex-end;align-items:center;}
     .header-btns{display:flex;gap:10px;}
     .nav-btn{background:var(--coral);color:#fff;border:none;padding:8px 16px;border-radius:99px;font-weight:700;cursor:pointer;font-family:inherit;}
     .nav-btn:hover{background:var(--coral-dark);}
 
-    /* Centered Hero Styling similar to provided style */
+    /* Centered Custom Hero Section matching reference image style */
     .hero{text-align:center;padding:45px 20px;background:var(--cream-2);border-bottom:2px solid #eee0c4;}
     .brand-title {
       font-family: 'Baloo 2', cursive;
@@ -89,7 +88,6 @@
 <body>
 
   <header>
-    <a href="#" class="logo">BD Children's Haven</a>
     <div class="header-btns">
       <button class="nav-btn" onclick="scrollToSection('cartSection')">🛒 Cart (<span id="cartCount">0</span>)</button>
       <button class="nav-btn" style="background:var(--sunflower);color:var(--ink);" onclick="scrollToSection('trackSection')">📦 My Orders</button>
