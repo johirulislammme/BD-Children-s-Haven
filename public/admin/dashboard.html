@@ -3,64 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>BD Children's Haven — Admin Dashboard</title>
+  <title>Admin Dashboard - BD Children's Haven</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --ink:#243858; --denim:#2f4258; --denim-dark:#22303f; --cream:#fdf6ea; --cream-2:#faf1de;
-      --coral:#ef6461; --coral-dark:#d6504d; --leaf:#5fa557; --leaf-dark:#478a41;
-      --sunflower:#f4d06f; --sky:#6ca6cd;
+      --ink:#243858; --denim:#2f4258; --denim-dark:#22303f; --cream:#fdf6ea;
+      --coral:#ef6461; --leaf:#5fa557; --leaf-dark:#478a41; --sky:#6ca6cd;
     }
-    *{box-sizing:border-box;}
-    body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);}
-
-    header{background:var(--denim-dark);color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;}
-    .logo{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:var(--sunflower);text-decoration:none;display:flex;align-items:center;gap:10px;}
-    
-    .header-right {display: flex; align-items: center; gap: 15px;}
-    .logout-btn {background: var(--coral); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-family: inherit;}
-    .logout-btn:hover {background: var(--coral-dark);}
-
-    .container{max-width:1200px;margin:24px auto;padding:0 20px;}
-    
-    .admin-nav{display:flex;gap:10px;margin-bottom:20px;}
-    .tab-btn{background:var(--denim);color:#fff;border:none;padding:10px 20px;border-radius:99px;font-weight:700;cursor:pointer;}
-    .tab-btn.active{background:var(--coral);}
-
-    .card{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:24px;margin-bottom:24px;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
-    .card h2{font-family:'Baloo 2',cursive;margin-top:0;color:var(--denim-dark);}
-
-    /* Form Styles */
-    .form-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:12px;}
-    .form-grid input, .form-grid select{width:100%;padding:10px;border:2px solid #eee0c4;border-radius:8px;font-family:inherit;}
-    .add-btn{background:var(--leaf);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:800;cursor:pointer;}
-    .add-btn:hover{background:var(--leaf-dark);}
-
-    /* Tables */
-    table{width:100%;border-collapse:collapse;margin-top:10px;}
-    th, td{padding:12px;border-bottom:1px solid #eee0c4;text-align:left;}
-    th{background:var(--cream-2);color:var(--denim-dark);}
+    body{font-family:'Nunito',sans-serif;background:#f4f7f6;margin:0;padding:20px;color:var(--ink);}
+    .container{max-width:1100px;margin:0 auto;background:#fff;padding:24px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.05);}
+    h2, h3{color:var(--denim-dark);}
+    .section-box{background:#fdfdfd;border:1px solid #eee;padding:20px;border-radius:8px;margin-bottom:30px;}
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:12px;margin-bottom:15px;}
+    input, select{padding:10px;border:1px solid #ddd;border-radius:6px;width:100%;font-family:inherit;}
+    .full-width{grid-column:1/-1;}
+    .action-btn{background:var(--leaf);color:#fff;border:none;padding:10px 20px;font-weight:700;border-radius:6px;cursor:pointer;}
+    .action-btn:hover{background:var(--leaf-dark);}
+    table{width:100%;border-collapse:collapse;margin-top:15px;}
+    th, td{padding:10px;border-bottom:1px solid #eee;text-align:left;font-size:14px;}
+    th{background:var(--cream);color:var(--denim-dark);}
+    .del-btn{background:var(--coral);color:#fff;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;}
+    .status-select{padding:6px;border-radius:4px;border:1px solid #ccc;}
   </style>
 </head>
 <body>
-
-  <header>
-    <a href="#" class="logo">🧸 BD Children's Haven — Admin Dashboard</a>
-    <div class="header-right">
-      <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
-    </div>
-  </header>
-
   <div class="container">
-    <div class="admin-nav">
-      <button class="tab-btn active" id="btnProducts" onclick="switchTab('products')">Products</button>
-      <button class="tab-btn" id="btnOrders" onclick="switchTab('orders')">Orders</button>
-    </div>
-
-    <!-- Products Management Section -->
-    <div class="card" id="productsSection">
-      <h2>Add New Product</h2>
+    <h2>Admin Dashboard</h2>
+    
+    <!-- Product Management Section -->
+    <div class="section-box">
+      <h3>Product Management</h3>
       <div class="form-grid">
         <input type="text" id="pName" placeholder="Product Name">
         <input type="number" id="pPrice" placeholder="Price (BDT)">
@@ -73,13 +46,12 @@
         </select>
         <input type="text" id="pTag" placeholder="Tag (e.g. New, Sale)">
         <input type="number" id="pStock" placeholder="Stock Amount">
+        <input type="text" id="pImage" class="full-width" placeholder="Image URL (optional)">
+        <input type="text" id="pVideo" class="full-width" placeholder="Video URL (YouTube or Imgur .mp4 link) (optional)">
       </div>
-      <div style="margin-bottom: 15px;">
-        <input type="text" id="pImage" placeholder="Image URL (optional)" style="width:100%; padding:10px; border:2px solid #eee0c4; border-radius:8px;">
-      </div>
-      <button class="add-btn" onclick="addProduct()">+ Add Product</button>
+      <button class="action-btn" onclick="addProduct()">+ Add Product</button>
 
-      <h2 style="margin-top:30px;">Existing Products List</h2>
+      <h3 style="margin-top:25px;">Existing Products</h3>
       <table>
         <thead>
           <tr>
@@ -87,72 +59,51 @@
             <th>Category</th>
             <th>Price</th>
             <th>Stock</th>
-            <th>Tag</th>
             <th>Action</th>
           </tr>
         </thead>
-        <tbody id="adminProductsTable">
-          <!-- Loaded dynamically -->
-        </tbody>
+        <tbody id="adminProductsTable"></tbody>
       </table>
     </div>
 
-    <!-- Orders Management Section -->
-    <div class="card" id="ordersSection" style="display:none;">
-      <h2>Customer Orders List</h2>
+    <!-- Order Management Section -->
+    <div class="section-box">
+      <h3>Customer Orders</h3>
       <table>
         <thead>
           <tr>
-            <th>#ID</th>
-            <th>Customer Name</th>
-            <th>Phone & Address</th>
-            <th>Payment</th>
+            <th>Order ID</th>
+            <th>Customer Info</th>
             <th>Items</th>
             <th>Total</th>
+            <th>Payment</th>
             <th>Status</th>
-            <th>Date</th>
           </tr>
         </thead>
         <tbody id="adminOrdersTable">
-          <!-- Loaded dynamically -->
+          <tr><td colspan="6" style="text-align:center; color:#888;">লোড হচ্ছে...</td></tr>
         </tbody>
       </table>
     </div>
   </div>
 
   <script>
-    function switchTab(tab) {
-      if(tab === 'products') {
-        document.getElementById('productsSection').style.display = 'block';
-        document.getElementById('ordersSection').style.display = 'none';
-        document.getElementById('btnProducts').classList.add('active');
-        document.getElementById('btnOrders').classList.remove('active');
-        loadAdminProducts();
-      } else {
-        document.getElementById('productsSection').style.display = 'none';
-        document.getElementById('ordersSection').style.display = 'block';
-        document.getElementById('btnOrders').classList.add('active');
-        document.getElementById('btnProducts').classList.remove('active');
-        loadAdminOrders();
-      }
-    }
-
+    // Load Products
     async function loadAdminProducts() {
       try {
         const res = await fetch('/api/products');
         const products = await res.json();
         const tbody = document.getElementById('adminProductsTable');
         tbody.innerHTML = '';
-
+        
         products.forEach(p => {
           tbody.innerHTML += `
             <tr>
               <td>${p.name}</td>
               <td>${p.category}</td>
               <td>৳ ${p.price}</td>
-              <td><strong style="color:var(--leaf-dark);">${p.stock || 0} pcs</strong></td>
-              <td>${p.tag || '-'}</td>
-              <td><button onclick="deleteProduct(${p.id})" style="background:var(--coral);color:#fff;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;">Delete</button></td>
+              <td>${p.stock || 0} pcs</td>
+              <td><button class="del-btn" onclick="deleteProduct(${p.id})">Delete</button></td>
             </tr>
           `;
         });
@@ -161,6 +112,7 @@
       }
     }
 
+    // Add Product with Video URL support
     async function addProduct() {
       const name = document.getElementById('pName').value.trim();
       const price = document.getElementById('pPrice').value.trim();
@@ -168,20 +120,20 @@
       const tag = document.getElementById('pTag').value.trim();
       const stock = document.getElementById('pStock').value.trim();
       const image = document.getElementById('pImage').value.trim();
+      const video = document.getElementById('pVideo').value.trim();
 
-      if(!name || !price || !stock) {
-        alert('দয়া করে নাম, দাম এবং স্টক পূরণ করুন।');
+      if(!name || !price) {
+        alert('দয়া করে প্রোডাক্টের নাম ও দাম দিন।');
         return;
       }
-
-      const newProduct = { name, price: Number(price), category, tag, stock: Number(stock), image };
 
       try {
         const res = await fetch('/api/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newProduct)
+          body: JSON.stringify({ name, price: Number(price), category, tag, stock: Number(stock) || 0, image, video })
         });
+
         const result = await res.json();
         if(result.success) {
           alert('প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!');
@@ -190,26 +142,28 @@
           document.getElementById('pTag').value = '';
           document.getElementById('pStock').value = '';
           document.getElementById('pImage').value = '';
+          document.getElementById('pVideo').value = '';
           loadAdminProducts();
+        } else {
+          alert('প্রোডাক্ট যোগ করতে সমস্যা হয়েছে।');
         }
-      } catch(err) {
+      } catch (err) {
         console.error('Error adding product:', err);
       }
     }
 
+    // Delete Product
     async function deleteProduct(id) {
       if(!confirm('আপনি কি এই প্রোডাক্টটি ডিলিট করতে চান?')) return;
       try {
-        const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-        const result = await res.json();
-        if(result.success) {
-          loadAdminProducts();
-        }
-      } catch(err) {
+        await fetch(`/api/products/${id}`, { method: 'DELETE' });
+        loadAdminProducts();
+      } catch (err) {
         console.error('Error deleting product:', err);
       }
     }
 
+    // Load Orders for Admin
     async function loadAdminOrders() {
       try {
         const res = await fetch('/api/orders');
@@ -218,56 +172,52 @@
         tbody.innerHTML = '';
 
         if(orders.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#888;">কোনো অর্ডার নেই।</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888;">কোনো অর্ডার নেই।</td></tr>';
           return;
         }
 
         orders.forEach(o => {
-          let itemsText = o.items.map(i => `${i.name} (${i.qty}x) [৳${i.price * i.qty}]`).join(', ');
+          let itemsText = o.items.map(i => `${i.name} (${i.qty}x)`).join(', ');
           tbody.innerHTML += `
             <tr>
               <td>#${o.id}</td>
-              <td><strong>${o.name}</strong></td>
-              <td>${o.phone}<br><small style="color:#666;">${o.address}</small></td>
-              <td>${o.paymentMethod}</td>
+              <td><strong>${o.name}</strong><br><small>${o.phone}</small><br><small>${o.address}</small></td>
               <td><small>${itemsText}</small></td>
-              <td><strong>৳ ${o.total}</strong></td>
+              <td>৳ ${o.total}</td>
+              <td>${o.paymentMethod}</td>
               <td>
-                <select onchange="updateOrderStatus(${o.id}, this.value)" style="padding:4px; border-radius:4px;">
+                <select class="status-select" onchange="updateOrderStatus(${o.id}, this.value)">
                   <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
                   <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
-                  <option value="Completed" ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                  <option value="Shipped" ${o.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+                  <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
                   <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
                 </select>
               </td>
-              <td><small>${new Date(o.date).toLocaleString()}</small></td>
             </tr>
           `;
         });
-      } catch(err) {
+      } catch (err) {
         console.error('Error loading orders:', err);
       }
     }
 
-    async function updateOrderStatus(id, status) {
+    // Update Order Status API call (if backend supports it, otherwise safe)
+    async function updateOrderStatus(orderId, newStatus) {
       try {
-        await fetch(`/api/orders/${id}`, {
+        await fetch(`/api/orders/${orderId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status })
+          body: JSON.stringify({ status: newStatus })
         });
-      } catch(err) {
-        console.error('Error updating status:', err);
+      } catch (err) {
+        console.error('Error updating order status:', err);
       }
     }
 
-    function logoutAdmin() {
-      if(confirm('আপনি কি অ্যাডমিন প্যানেল থেকে লগআউট করতে চান?')) {
-        window.location.href = '/';
-      }
-    }
-
+    // Initial Load
     loadAdminProducts();
+    loadAdminOrders();
   </script>
 </body>
 </html>
