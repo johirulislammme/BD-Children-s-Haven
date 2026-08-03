@@ -5,72 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BD Children's Haven — Admin Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root{
       --ink:#243858; --denim:#2f4258; --denim-dark:#22303f; --cream:#fdf6ea; --cream-2:#faf1de;
       --coral:#ef6461; --coral-dark:#d6504d; --leaf:#5fa557; --leaf-dark:#478a41;
+      --sunflower:#f4d06f; --sky:#6ca6cd;
     }
     *{box-sizing:border-box;}
     body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--ink);}
-    header{background:var(--denim-dark);color:#fff;padding:16px 24px;font-size:20px;font-weight:800;}
-    .wrap{max-width:1180px;margin:24px auto;padding:0 24px;}
-    .nav-tabs{display:flex;gap:12px;margin-bottom:24px;}
-    .tab-btn{background:var(--denim);color:#fff;border:none;padding:10px 20px;border-radius:99px;font-weight:700;cursor:pointer;font-size:14px;}
-    .tab-btn.active{background:var(--coral);}
-    
-    .panel{background:#fff;border-radius:16px;padding:24px;border:2px solid #eee0c4;box-shadow:0 4px 12px rgba(0,0,0,0.03);display:none;}
-    .panel.active{display:block;}
-    
-    h2{margin-top:0;color:var(--denim-dark);}
-    .form-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:16px;}
-    .form-grid input, .form-grid select{width:100%;padding:10px;border:2px solid #eee0c4;border-radius:8px;font-family:inherit;}
-    .add-prod-btn{background:var(--leaf);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:800;cursor:pointer;}
-    .add-prod-btn:hover{background:var(--leaf-dark);}
 
-    table{width:100%;border-collapse:collapse;margin-top:16px;background:#fff;border-radius:8px;overflow:hidden;}
-    th, td{padding:12px;text-align:left;border-bottom:1px solid #eee0c4;font-size:14px;}
-    th{background:var(--cream-2);color:var(--denim-dark);font-weight:800;}
-    .badge-status{padding:4px 10px;border-radius:99px;font-size:11px;font-weight:800;}
-    .status-Pending{background:#fff2cc;color:#806000;}
-    .status-Processing{background:#dae8fc;color:#103c82;}
-    .status-Delivered{background:#d5e8d4;color:#274e13;}
-    .status-Cancelled{background:#f8cecc;color:#b85450;}
+    header{background:var(--denim-dark);color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;}
+    .logo{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:var(--sunflower);text-decoration:none;display:flex;align-items:center;gap:10px;}
     
-    .del-btn{background:var(--coral);color:#fff;border:none;padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:700;}
-    .del-btn:hover{background:var(--coral-dark);}
+    .header-right {display: flex; align-items: center; gap: 15px;}
+    .logout-btn {background: var(--coral); color: #fff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: 700; cursor: pointer; font-family: inherit;}
+    .logout-btn:hover {background: var(--coral-dark);}
+
+    .container{max-width:1200px;margin:24px auto;padding:0 20px;}
+    
+    .admin-nav{display:flex;gap:10px;margin-bottom:20px;}
+    .tab-btn{background:var(--denim);color:#fff;border:none;padding:10px 20px;border-radius:99px;font-weight:700;cursor:pointer;}
+    .tab-btn.active{background:var(--coral);}
+
+    .card{background:#fff;border-radius:16px;border:2px solid #eee0c4;padding:24px;margin-bottom:24px;box-shadow:0 4px 12px rgba(0,0,0,0.03);}
+    .card h2{font-family:'Baloo 2',cursive;margin-top:0;color:var(--denim-dark);}
+
+    /* Form Styles */
+    .form-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));gap:12px;margin-bottom:12px;}
+    .form-grid input, .form-grid select{width:100%;padding:10px;border:2px solid #eee0c4;border-radius:8px;font-family:inherit;}
+    .add-btn{background:var(--leaf);color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:800;cursor:pointer;}
+    .add-btn:hover{background:var(--leaf-dark);}
+
+    /* Tables */
+    table{width:100%;border-collapse:collapse;margin-top:10px;}
+    th, td{padding:12px;border-bottom:1px solid #eee0c4;text-align:left;}
+    th{background:var(--cream-2);color:var(--denim-dark);}
   </style>
 </head>
 <body>
 
-  <header>🧸 BD Children's Haven — Admin Dashboard</header>
+  <header>
+    <a href="#" class="logo">🧸 BD Children's Haven — Admin Dashboard</a>
+    <div class="header-right">
+      <button class="logout-btn" onclick="logoutAdmin()">Logout</button>
+    </div>
+  </header>
 
-  <div class="wrap">
-    <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchTab('products')">Products</button>
-      <button class="tab-btn" onclick="switchTab('orders')">Orders</button>
+  <div class="container">
+    <div class="admin-nav">
+      <button class="tab-btn active" id="btnProducts" onclick="switchTab('products')">Products</button>
+      <button class="tab-btn" id="btnOrders" onclick="switchTab('orders')">Orders</button>
     </div>
 
-    <!-- Products Panel -->
-    <div class="panel active" id="productsPanel">
+    <!-- Products Management Section -->
+    <div class="card" id="productsSection">
       <h2>Add New Product</h2>
       <div class="form-grid">
-        <input type="text" id="prodName" placeholder="Product Name">
-        <input type="number" id="prodPrice" placeholder="Price (BDT)">
-        <select id="prodCategory">
+        <input type="text" id="pName" placeholder="Product Name">
+        <input type="number" id="pPrice" placeholder="Price (BDT)">
+        <select id="pCategory">
           <option value="Toys">Toys</option>
           <option value="Learning">Learning</option>
           <option value="Dress">Dress</option>
           <option value="Food">Food</option>
           <option value="Cosmetics">Cosmetics</option>
         </select>
-        <input type="text" id="prodTag" placeholder="Tag (e.g. New, Sale)">
-        <input type="number" id="prodStock" placeholder="Stock Amount">
-        <input type="text" id="prodImage" placeholder="Image URL (optional)">
+        <input type="text" id="pTag" placeholder="Tag (e.g. New, Sale)">
+        <input type="number" id="pStock" placeholder="Stock Amount">
       </div>
-      <button class="add-prod-btn" onclick="addProduct()">+ Add Product</button>
+      <div style="margin-bottom: 15px;">
+        <input type="text" id="pImage" placeholder="Image URL (optional)" style="width:100%; padding:10px; border:2px solid #eee0c4; border-radius:8px;">
+      </div>
+      <button class="add-btn" onclick="addProduct()">+ Add Product</button>
 
-      <h2 style="margin-top:32px;">Existing Products List</h2>
+      <h2 style="margin-top:30px;">Existing Products List</h2>
       <table>
         <thead>
           <tr>
@@ -83,13 +92,13 @@
           </tr>
         </thead>
         <tbody id="adminProductsTable">
-          <tr><td colspan="6" style="text-align:center; color:#888;">লোডিং হচ্ছে...</td></tr>
+          <!-- Loaded dynamically -->
         </tbody>
       </table>
     </div>
 
-    <!-- Orders Panel -->
-    <div class="panel" id="ordersPanel">
+    <!-- Orders Management Section -->
+    <div class="card" id="ordersSection" style="display:none;">
       <h2>Customer Orders List</h2>
       <table>
         <thead>
@@ -105,7 +114,7 @@
           </tr>
         </thead>
         <tbody id="adminOrdersTable">
-          <tr><td colspan="8" style="text-align:center; color:#888;">লোডিং হচ্ছে...</td></tr>
+          <!-- Loaded dynamically -->
         </tbody>
       </table>
     </div>
@@ -113,16 +122,17 @@
 
   <script>
     function switchTab(tab) {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-
-      if (tab === 'products') {
-        document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
-        document.getElementById('productsPanel').classList.add('active');
+      if(tab === 'products') {
+        document.getElementById('productsSection').style.display = 'block';
+        document.getElementById('ordersSection').style.display = 'none';
+        document.getElementById('btnProducts').classList.add('active');
+        document.getElementById('btnOrders').classList.remove('active');
         loadAdminProducts();
       } else {
-        document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
-        document.getElementById('ordersPanel').classList.add('active');
+        document.getElementById('productsSection').style.display = 'none';
+        document.getElementById('ordersSection').style.display = 'block';
+        document.getElementById('btnOrders').classList.add('active');
+        document.getElementById('btnProducts').classList.remove('active');
         loadAdminOrders();
       }
     }
@@ -134,20 +144,15 @@
         const tbody = document.getElementById('adminProductsTable');
         tbody.innerHTML = '';
 
-        if (products.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:#888;">কোনো প্রোডাক্ট নেই!</td></tr>';
-          return;
-        }
-
         products.forEach(p => {
           tbody.innerHTML += `
             <tr>
-              <td><strong>${p.name}</strong></td>
+              <td>${p.name}</td>
               <td>${p.category}</td>
               <td>৳ ${p.price}</td>
-              <td><span style="font-weight:800; color:${p.stock > 0 ? 'var(--leaf-dark)' : 'var(--coral)'};">${p.stock || 0} pcs</span></td>
+              <td><strong style="color:var(--leaf-dark);">${p.stock || 0} pcs</strong></td>
               <td>${p.tag || '-'}</td>
-              <td><button class="del-btn" onclick="deleteProduct(${p.id})">Delete</button></td>
+              <td><button onclick="deleteProduct(${p.id})" style="background:var(--coral);color:#fff;border:none;padding:6px 12px;border-radius:4px;cursor:pointer;">Delete</button></td>
             </tr>
           `;
         });
@@ -157,40 +162,51 @@
     }
 
     async function addProduct() {
-      const name = document.getElementById('prodName').value;
-      const price = document.getElementById('prodPrice').value;
-      const category = document.getElementById('prodCategory').value;
-      const tag = document.getElementById('prodTag').value;
-      const stock = document.getElementById('prodStock').value;
-      const image = document.getElementById('prodImage').value;
+      const name = document.getElementById('pName').value.trim();
+      const price = document.getElementById('pPrice').value.trim();
+      const category = document.getElementById('pCategory').value;
+      const tag = document.getElementById('pTag').value.trim();
+      const stock = document.getElementById('pStock').value.trim();
+      const image = document.getElementById('pImage').value.trim();
 
-      if (!name || !price || !stock) {
-        alert('দয়া করে প্রোডাক্টের নাম, মূল্য এবং স্টক পরিমাণ দিন।');
+      if(!name || !price || !stock) {
+        alert('দয়া করে নাম, দাম এবং স্টক পূরণ করুন।');
         return;
       }
 
-      const res = await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, price, category, tag, stock, image })
-      });
+      const newProduct = { name, price: Number(price), category, tag, stock: Number(stock), image };
 
-      const result = await res.json();
-      if (result.success) {
-        alert('প্রোডাক্ট সফলভাবে যুক্ত করা হয়েছে!');
-        document.getElementById('prodName').value = '';
-        document.getElementById('prodPrice').value = '';
-        document.getElementById('prodTag').value = '';
-        document.getElementById('prodStock').value = '';
-        document.getElementById('prodImage').value = '';
-        loadAdminProducts();
+      try {
+        const res = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newProduct)
+        });
+        const result = await res.json();
+        if(result.success) {
+          alert('প্রোডাক্ট সফলভাবে যোগ করা হয়েছে!');
+          document.getElementById('pName').value = '';
+          document.getElementById('pPrice').value = '';
+          document.getElementById('pTag').value = '';
+          document.getElementById('pStock').value = '';
+          document.getElementById('pImage').value = '';
+          loadAdminProducts();
+        }
+      } catch(err) {
+        console.error('Error adding product:', err);
       }
     }
 
     async function deleteProduct(id) {
-      if (confirm('আপনি কি এই প্রোডাক্টটি ডিলিট করতে চান?')) {
-        await fetch(`/api/products/${id}`, { method: 'DELETE' });
-        loadAdminProducts();
+      if(!confirm('আপনি কি এই প্রোডাক্টটি ডিলিট করতে চান?')) return;
+      try {
+        const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+        const result = await res.json();
+        if(result.success) {
+          loadAdminProducts();
+        }
+      } catch(err) {
+        console.error('Error deleting product:', err);
       }
     }
 
@@ -201,58 +217,53 @@
         const tbody = document.getElementById('adminOrdersTable');
         tbody.innerHTML = '';
 
-        if (orders.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#888;">কোনো অর্ডার পাওয়া যায়নি।</td></tr>';
+        if(orders.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#888;">কোনো অর্ডার নেই।</td></tr>';
           return;
         }
 
         orders.forEach(o => {
-          let itemsText = o.items.map(i => `${i.name} (${i.qty}x) [৳${i.price}]`).join(', ');
-          let formattedDate = o.date;
-          try {
-            formattedDate = new Date(o.date).toLocaleString('en-US', {
-              timeZone: 'Asia/Dhaka',
-              dateStyle: 'short',
-              timeStyle: 'short'
-            });
-          } catch(e) {}
-
+          let itemsText = o.items.map(i => `${i.name} (${i.qty}x) [৳${i.price * i.qty}]`).join(', ');
           tbody.innerHTML += `
             <tr>
-              <td><strong>#${o.id}</strong></td>
+              <td>#${o.id}</td>
               <td><strong>${o.name}</strong></td>
               <td>${o.phone}<br><small style="color:#666;">${o.address}</small></td>
               <td>${o.paymentMethod}</td>
               <td><small>${itemsText}</small></td>
               <td><strong>৳ ${o.total}</strong></td>
               <td>
-                <select onchange="updateOrderStatus(${o.id}, this.value)" class="badge-status status-${o.status}">
+                <select onchange="updateOrderStatus(${o.id}, this.value)" style="padding:4px; border-radius:4px;">
                   <option value="Pending" ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
                   <option value="Processing" ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
-                  <option value="Delivered" ${o.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+                  <option value="Completed" ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
                   <option value="Cancelled" ${o.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
                 </select>
               </td>
-              <td><small>${formattedDate}</small></td>
+              <td><small>${new Date(o.date).toLocaleString()}</small></td>
             </tr>
           `;
         });
-      } catch (err) {
+      } catch(err) {
         console.error('Error loading orders:', err);
       }
     }
 
-    async function updateOrderStatus(orderId, newStatus) {
-      const res = await fetch(`/api/orders/${orderId}/status`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
-      });
-      const result = await res.json();
-      if (result.success) {
-        loadAdminOrders();
-      } else {
-        alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে!');
+    async function updateOrderStatus(id, status) {
+      try {
+        await fetch(`/api/orders/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+      } catch(err) {
+        console.error('Error updating status:', err);
+      }
+    }
+
+    function logoutAdmin() {
+      if(confirm('আপনি কি অ্যাডমিন প্যানেল থেকে লগআউট করতে চান?')) {
+        window.location.href = '/';
       }
     }
 
