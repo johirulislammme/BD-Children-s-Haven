@@ -36,7 +36,7 @@ function saveData(data) {
   fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
 }
 
-// Admin Login API (আপনার দেওয়া সঠিক ইউজারনেম ও পাসওয়ার্ড)
+// Admin Login API (আপনার সঠিক ইউজারনেম ও পাসওয়ার্ড)
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
   if (username === 'johirul' && password === 'Js30113811') {
